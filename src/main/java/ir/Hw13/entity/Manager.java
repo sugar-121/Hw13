@@ -8,22 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Objects;
 
-
+@Entity
 @Getter
-public class Manager{
-
-    private static Manager manager;
-
-    private String userName = "admin";
-
-    private String password = "121";
-
-    private Manager(){}
-
-    public static Manager getInstance() {
-        if (Objects.isNull(manager)){
-            manager = new Manager();
-        }
-        return manager;
-    }
+@NoArgsConstructor
+public class Manager extends Person{
 }
