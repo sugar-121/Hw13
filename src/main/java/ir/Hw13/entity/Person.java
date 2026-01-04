@@ -23,4 +23,6 @@ public class Person extends BaseEntity<Long>{
 
     @Column(name = "last_name")
     private String lastName;
+
+
 }
