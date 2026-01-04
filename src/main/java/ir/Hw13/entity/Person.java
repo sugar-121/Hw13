@@ -1,10 +1,7 @@
 package ir.Hw13.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +21,13 @@ public class Person extends BaseEntity<Long>{
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "roll")
+    @Enumerated(EnumType.STRING)
+    private Roll roll;
 
+    @Column(name="status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 
 }
