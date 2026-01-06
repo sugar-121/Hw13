@@ -1,22 +1,44 @@
 package ir.Hw13.ui;
 
+import ir.Hw13.dto.PersonSignUpDto;
+import ir.Hw13.service.StudentServiceImpl;
+import ir.Hw13.service.TeacherServiceImpl;
+import ir.Hw13.util.ApplicationContext;
+
 import java.util.Scanner;
 
 public class Menu {
     Scanner inI = new Scanner(System.in);
     Scanner inS = new Scanner(System.in);
+    private StudentServiceImpl studentService;
+    private TeacherServiceImpl teacherService;
+
+    public Menu() {
+        this.studentService = ApplicationContext.getInstance().getStudentService();
+        this.teacherService = ApplicationContext.getInstance().getTeacherService();
+    }
 
     public void start() {
         while (true) {
             System.out.println("""
                     1. Sign up(student/teacher)
+                    2. Log in (only for manager)
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> handleSignUp();
+                case 2 -> handleLogIn();
             }
 
         }
+    }
+
+    private void handleLogIn() {
+        System.out.println("Enter your id: ");
+        long id = inI.nextLong();
+        System.out.println("Enter your password: ");
+        String password = inS.nextLine();
+
     }
 
     private void handleSignUp() {
@@ -33,16 +55,21 @@ public class Menu {
             if (roll != 1 && roll != 2) {
                 System.out.println("student(1)   teacher(2)");
                 isValid = false;
+                roll = inI.nextInt();
             }
-            roll = inI.nextInt();
         } while (!isValid);
-
+        boolean isDone = false;
+        PersonSignUpDto signUpDto = new PersonSignUpDto();
+        signUpDto.setFirstName(firstName);
+        signUpDto.setLastName(lastName);
+        signUpDto.setPassword(password);
         if (roll == 1) {
-            //
+            isDone = studentService.signUp(signUpDto);
         } else {
-            //
+            isDone = teacherService.signUp(signUpDto);
         }
-
-
+        if (isDone) {
+            System.out.println("done");
+        }
     }
 }
