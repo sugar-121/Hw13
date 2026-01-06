@@ -1,5 +1,6 @@
 package ir.Hw13.util;
 
+import ir.Hw13.repository.BaseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -10,6 +11,7 @@ public class ApplicationContext {
     private static ApplicationContext context;
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+    private BaseRepository baseRepository;
 
     private ApplicationContext(){}
 
@@ -33,5 +35,11 @@ public class ApplicationContext {
         }
         return entityManager;
     }
+     public BaseRepository getBaseRepository(){
+        if (Objects.isNull(baseRepository)){
+            baseRepository = new BaseRepository<>(entityManager);
+        }
+        return baseRepository;
+     }
 
 }
