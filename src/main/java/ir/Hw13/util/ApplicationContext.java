@@ -27,7 +27,7 @@ public class ApplicationContext {
         return entityManagerFactory;
     }
 
-    private EntityManager getEntityManager(){
+    public EntityManager getEntityManager(){
         if (Objects.isNull(entityManager)){
             entityManager = getEntityManagerFactory().createEntityManager();
         }

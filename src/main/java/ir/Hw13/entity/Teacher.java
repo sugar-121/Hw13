@@ -12,17 +12,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Teacher extends Person{
+public class Teacher extends Person {
 
-    @Column(name = "teacher_code")
-    private String teacherCode;
-
-    public Teacher(String firstName,
-                   String lastName,
-                   Roll roll,
-                   Status status,
-                   String teacherCode) {
-        super(firstName, lastName, roll, status);
-        this.teacherCode = teacherCode;
-    }
 }
