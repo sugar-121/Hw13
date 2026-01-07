@@ -4,11 +4,10 @@ import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.entity.Status;
 import ir.Hw13.entity.Teacher;
 
-public class TeacherSignUpMapper implements PersonMapper<Teacher> {
+public class TeacherMapper{
 
 
-    @Override
-    public Teacher toEntity(PersonSignUpDto dto) {
+    public Teacher toEntityT(PersonSignUpDto dto) {
         Teacher teacher = new Teacher();
         teacher.setFirstName(dto.getFirstName());
         teacher.setLastName(dto.getLastName());

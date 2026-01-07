@@ -1,6 +1,8 @@
 package ir.Hw13.ui;
 
 import ir.Hw13.dto.PersonSignUpDto;
+import ir.Hw13.entity.Manager;
+import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
 import ir.Hw13.util.ApplicationContext;
@@ -12,10 +14,12 @@ public class Menu {
     Scanner inS = new Scanner(System.in);
     private StudentServiceImpl studentService;
     private TeacherServiceImpl teacherService;
+    private ManagerService managerService;
 
     public Menu() {
         this.studentService = ApplicationContext.getInstance().getStudentService();
         this.teacherService = ApplicationContext.getInstance().getTeacherService();
+        this.managerService = ApplicationContext.getInstance().getManagerService();
     }
 
     public void start() {
@@ -38,6 +42,28 @@ public class Menu {
         long id = inI.nextLong();
         System.out.println("Enter your password: ");
         String password = inS.nextLine();
+
+        if (managerService.logIn(id, password)) {
+            managerMenu();
+        } else {
+            System.out.println("Wrong input!");
+        }
+
+    }
+
+    private void managerMenu() {
+        System.out.println("Welcome manager. Choose your service: ");
+        while (true) {
+            System.out.println("""
+                    1. Show sign up requests
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> System.out.println(managerService.loadSignUpRequests());
+            }
+
+
+        }
 
     }
 

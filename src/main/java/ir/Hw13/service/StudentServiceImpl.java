@@ -1,7 +1,7 @@
 package ir.Hw13.service;
 
 import ir.Hw13.dto.PersonSignUpDto;
-import ir.Hw13.dto.mapper.StudentSignUpMapper;
+import ir.Hw13.dto.mapper.StudentMapper;
 import ir.Hw13.entity.Student;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.util.ApplicationContext;
@@ -16,7 +16,7 @@ public class StudentServiceImpl implements BaseService {
 
     private Validator validator;
     private StudentRepositoryImpl studentRepository;
-    private StudentSignUpMapper studentMapper;
+    private StudentMapper studentMapper;
 
     public StudentServiceImpl() {
         try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
@@ -33,7 +33,7 @@ public class StudentServiceImpl implements BaseService {
             violations.forEach(v-> System.out.println(v.getMessage()));
             return false;
         }
-        Student student = studentMapper.toEntity(dto);
+        Student student = studentMapper.toEntityS(dto);
         studentRepository.signUp(student);
         return true;
     }

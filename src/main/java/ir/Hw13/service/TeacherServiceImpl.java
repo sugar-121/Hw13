@@ -1,7 +1,7 @@
 package ir.Hw13.service;
 
 import ir.Hw13.dto.PersonSignUpDto;
-import ir.Hw13.dto.mapper.TeacherSignUpMapper;
+import ir.Hw13.dto.mapper.TeacherMapper;
 import ir.Hw13.entity.Teacher;
 import ir.Hw13.repository.TeacherRepositoryImpl;
 import ir.Hw13.util.ApplicationContext;
@@ -16,7 +16,7 @@ public class TeacherServiceImpl implements BaseService {
 
     private Validator validator;
     private TeacherRepositoryImpl teacherRepository;
-    TeacherSignUpMapper signUpTeacherMapper;
+    TeacherMapper signUpTeacherMapper;
 
 
     public TeacherServiceImpl() {
@@ -34,7 +34,7 @@ public class TeacherServiceImpl implements BaseService {
             violations.forEach(v -> System.out.println(v.getMessage()));
             return false;
         }
-        Teacher teacher = signUpTeacherMapper.toEntity(dto);
+        Teacher teacher = signUpTeacherMapper.toEntityT(dto);
         teacherRepository.signUp(teacher);
         return true;
     }

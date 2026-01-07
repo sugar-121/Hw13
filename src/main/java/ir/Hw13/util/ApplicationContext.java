@@ -1,9 +1,12 @@
 package ir.Hw13.util;
 
-import ir.Hw13.dto.mapper.StudentSignUpMapper;
-import ir.Hw13.dto.mapper.TeacherSignUpMapper;
+import ir.Hw13.dto.mapper.PersonMapper;
+import ir.Hw13.dto.mapper.StudentMapper;
+import ir.Hw13.dto.mapper.TeacherMapper;
+import ir.Hw13.repository.ManagerRepository;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.repository.TeacherRepositoryImpl;
+import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
 import jakarta.persistence.EntityManager;
@@ -18,12 +21,17 @@ public class ApplicationContext {
     private EntityManager entityManager;
 
     private StudentRepositoryImpl studentRepository;
-    private StudentSignUpMapper studentMapper;
+    private StudentMapper studentMapper;
     private StudentServiceImpl studentService;
 
     private TeacherRepositoryImpl teacherRepository;
-    private TeacherSignUpMapper teacherMapper;
+    private TeacherMapper teacherMapper;
     private TeacherServiceImpl teacherService;
+
+    private ManagerService managerService;
+    private ManagerRepository managerRepository;
+
+    private PersonMapper personMapper;
 
     private ApplicationContext(){}
 
@@ -54,9 +62,9 @@ public class ApplicationContext {
         return studentRepository;
      }
 
-     public StudentSignUpMapper getStudentMapper(){
+     public StudentMapper getStudentMapper(){
          if (Objects.isNull(studentMapper)){
-             studentMapper = new StudentSignUpMapper();
+             studentMapper = new StudentMapper();
          }
          return studentMapper;
      }
@@ -75,9 +83,9 @@ public class ApplicationContext {
          return teacherRepository;
      }
 
-     public TeacherSignUpMapper getSignUpTeacherMapper(){
+     public TeacherMapper getSignUpTeacherMapper(){
          if (Objects.isNull(teacherMapper)){
-             teacherMapper = new TeacherSignUpMapper();
+             teacherMapper = new TeacherMapper();
          }
          return teacherMapper;
      }
@@ -89,5 +97,24 @@ public class ApplicationContext {
         return teacherService;
     }
 
+    public ManagerService getManagerService(){
+        if (Objects.isNull(managerService)){
+            managerService = new ManagerService();
+        }
+        return managerService;
+    }
 
+    public ManagerRepository getManagerRepository(){
+        if (Objects.isNull(managerRepository)){
+            managerRepository = new ManagerRepository(getEntityManager());
+        }
+        return managerRepository;
+    }
+
+    public PersonMapper getPersonMapper(){
+        if (Objects.isNull(personMapper)){
+            personMapper = new PersonMapper();
+        }
+        return personMapper;
+    }
 }

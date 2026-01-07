@@ -11,5 +11,12 @@ import java.util.Objects;
 @Entity
 @Getter
 @NoArgsConstructor
+
 public class Manager extends Person{
+    public Manager(String firstName,
+                   String lastName,
+                   String password,
+                   Status status) {
+        super(firstName, lastName, password, status);
+    }
 }
