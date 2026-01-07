@@ -18,6 +18,17 @@ public class ManagerRepository {
         TypedQuery<Person> query = entityManager.createQuery("select p from Person p where p.status = : status", Person.class);
         query.setParameter("status", Status.WAITING_FOR_SUBMIT);
         return query.getResultList();
+    }
 
+    public void submitAll(List<Person> people){
+        entityManager.getTransaction().begin();
+        people.forEach(person -> entityManager.merge(person));
+        entityManager.getTransaction().commit();
+    }
+
+    public void submitOne(Person person){
+        entityManager.getTransaction().begin();
+        entityManager.merge(person);
+        entityManager.getTransaction().commit();
     }
 }

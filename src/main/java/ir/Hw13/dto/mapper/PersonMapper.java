@@ -1,6 +1,7 @@
 package ir.Hw13.dto.mapper;
 
 import ir.Hw13.entity.Person;
+import ir.Hw13.entity.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,5 +22,15 @@ public class PersonMapper {
         }
         return people;
     }
+    public List<Person> submitAll(List<Person> people){
+        people.forEach(person -> person.setStatus(Status.SUBMITTED));
+        return people;
+    }
+
+    public Person submitOne(Person person){
+        person.setStatus(Status.SUBMITTED);
+        return person;
+    }
+
 
 }

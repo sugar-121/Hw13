@@ -18,7 +18,7 @@ public class ManagerService {
         TypedQuery<Long> query = entityManager.createQuery("select count(p) from Person p where p.id =: id and p.password =: password", Long.class);
         query.setParameter("id", id);
         query.setParameter("password", password);
-        if (query.getSingleResultOrNull() != null) {
+        if (query.getSingleResult() == 1) {
             return true;
         } else {
             return false;
@@ -28,6 +28,18 @@ public class ManagerService {
     public List<String> loadSignUpRequests() {
         return personMapper.personLoader(
                 managerRepository.loadSignUpRequests());
+    }
+
+    public void submitAll(){
+        List<Person> people = managerRepository.loadSignUpRequests();
+        List<Person> submitted = personMapper.submitAll(people);
+        managerRepository.submitAll(submitted);
+    }
+
+    public void submitOne(long id){
+        Person person = entityManager.find(Person.class, id);
+        Person submitted = personMapper.submitOne(person);
+        managerRepository.submitOne(submitted);
 
     }
 }

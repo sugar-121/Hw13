@@ -44,28 +44,56 @@ public class Menu {
         String password = inS.nextLine();
 
         if (managerService.logIn(id, password)) {
-            managerMenu();
+            showManagerMenu();
         } else {
             System.out.println("Wrong input!");
         }
 
     }
 
-    private void managerMenu() {
+    private void showManagerMenu() {
         System.out.println("Welcome manager. Choose your service: ");
         while (true) {
             System.out.println("""
                     1. Show sign up requests
+                    2. Submit sign up requests
+                    3. Edit user
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> System.out.println(managerService.loadSignUpRequests());
+                case 2 -> handleSubmit();
             }
 
 
         }
 
     }
+
+    private void handleSubmit() {
+        while (true) {
+            System.out.println("""
+                    1. Submit all
+                    2. Submit one
+                    3. Back
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> managerService.submitAll();
+                case 2 -> submitOne();
+                case 3 -> {
+                    return;
+                }
+            }
+        }
+    }
+
+    private void submitOne() {
+        System.out.println("Enter the id to submit: ");
+        long id = inI.nextLong();
+        managerService.submitOne(id);
+    }
+
 
     private void handleSignUp() {
         System.out.println("Enter your first name: ");
