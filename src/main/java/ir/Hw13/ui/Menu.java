@@ -1,7 +1,8 @@
 package ir.Hw13.ui;
 
 import ir.Hw13.dto.PersonSignUpDto;
-import ir.Hw13.entity.Manager;
+import ir.Hw13.dto.PersonUpdateDto;
+import ir.Hw13.entity.Person;
 import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
@@ -58,14 +59,69 @@ public class Menu {
                     1. Show sign up requests
                     2. Submit sign up requests
                     3. Edit user
+                    4. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> System.out.println(managerService.loadSignUpRequests());
                 case 2 -> handleSubmit();
+                case 3 -> handleEditUser();
+                case 4 -> {
+                    return;
+                }
             }
 
+        }
 
+    }
+
+    private void handleEditUser() {
+        System.out.println("Enter the id of the user: ");
+        long id = inI.nextLong();
+        Person fetchedPerson = managerService.loadById(id);
+        System.out.println(fetchedPerson);
+        String newFirstName = null;
+        String newLastName = null;
+        String newRoll = null;
+        while (true) {
+            System.out.println("""
+                    What do you want to edit?
+                    1.First name
+                    2.Last name
+                    3.Change roll
+                    4.Commit changes
+                    5.Back
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Enter the new first name:");
+                    newFirstName = inS.nextLine();
+                }
+                case 2 -> {
+                    System.out.println("Enter the new Last name:");
+                    newLastName = inS.nextLine();
+                }
+                case 3 -> {
+                    System.out.println("You changed the roll.");
+                    if (fetchedPerson.getClass().getSimpleName().equals("Student")) {
+                        newRoll = "Teacher";
+                    } else {
+                        newRoll = "Student";
+                    }
+                }
+                case 4 -> {
+                    PersonUpdateDto personUpdateDto = new PersonUpdateDto(newFirstName, newLastName, newRoll);
+                    managerService.updateUser(personUpdateDto, fetchedPerson);
+                }
+                case 5 -> {
+                    return;
+                }
+                default -> {
+                    System.out.println("Invalid input!");
+                    return;
+                }
+            }
         }
 
     }

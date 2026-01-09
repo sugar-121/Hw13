@@ -24,7 +24,7 @@ public class TeacherServiceImpl implements BaseService {
             this.validator = validatorFactory.getValidator();
         }
         this.teacherRepository = ApplicationContext.getInstance().getTeacherRepository();
-        this.signUpTeacherMapper = ApplicationContext.getInstance().getSignUpTeacherMapper();
+        this.signUpTeacherMapper = ApplicationContext.getInstance().getTeacherMapper();
     }
 
     @Override

@@ -83,7 +83,7 @@ public class ApplicationContext {
          return teacherRepository;
      }
 
-     public TeacherMapper getSignUpTeacherMapper(){
+     public TeacherMapper getTeacherMapper(){
          if (Objects.isNull(teacherMapper)){
              teacherMapper = new TeacherMapper();
          }

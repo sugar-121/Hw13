@@ -8,7 +8,7 @@ import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 public class ManagerRepository {
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public ManagerRepository(EntityManager entityManager){
         this.entityManager = entityManager;
@@ -27,6 +27,22 @@ public class ManagerRepository {
     }
 
     public void submitOne(Person person){
+        entityManager.getTransaction().begin();
+        entityManager.merge(person);
+        entityManager.getTransaction().commit();
+    }
+
+    public Person loadById(long id){
+        return entityManager.find(Person.class , id);
+    }
+
+    public void deleteUser(Person person){
+        entityManager.getTransaction().begin();
+        entityManager.remove(person);
+        entityManager.getTransaction().commit();
+    }
+
+    public void update(Person person){
         entityManager.getTransaction().begin();
         entityManager.merge(person);
         entityManager.getTransaction().commit();

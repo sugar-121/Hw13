@@ -1,5 +1,6 @@
 package ir.Hw13.dto.mapper;
 
+import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.entity.Person;
 import ir.Hw13.entity.Status;
 
@@ -32,5 +33,14 @@ public class PersonMapper {
         return person;
     }
 
+    public Person mapToEntityForUpdate(PersonUpdateDto dto, Person fetchedPerson){
+        if (dto.getFirstName()!=null){
+            fetchedPerson.setFirstName(dto.getFirstName());
+        }
+        if (dto.getLastName()!=null){
+            fetchedPerson.setLastName(dto.getLastName());
+        }
+        return fetchedPerson;
+    }
 
 }
