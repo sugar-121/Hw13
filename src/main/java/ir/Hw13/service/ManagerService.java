@@ -13,6 +13,9 @@ import ir.Hw13.repository.TeacherRepositoryImpl;
 import ir.Hw13.util.ApplicationContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 import java.util.List;
 import java.util.Objects;
@@ -78,5 +81,12 @@ public class ManagerService {
 
     public void deleteUser(Person person) {
         managerRepository.deleteUser(person);
+    }
+
+    public List<Person> applyFilter(String filteredType,
+                                    String filteredFirstName,
+                                    String filteredLastName) {
+        return managerRepository.applyFilter(filteredType, filteredFirstName, filteredLastName);
+
     }
 }

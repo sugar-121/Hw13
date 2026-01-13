@@ -3,11 +3,13 @@ package ir.Hw13.ui;
 import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.entity.Person;
+import ir.Hw13.entity.Status;
 import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
 import ir.Hw13.util.ApplicationContext;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -59,20 +61,67 @@ public class Menu {
                     1. Show sign up requests
                     2. Submit sign up requests
                     3. Edit user
-                    4. Back
+                    4. Search user
+                    5. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> System.out.println(managerService.loadSignUpRequests());
                 case 2 -> handleSubmit();
                 case 3 -> handleEditUser();
-                case 4 -> {
+                case 4 -> handleSearchUser();
+                case 5 -> {
                     return;
                 }
             }
 
         }
 
+    }
+
+    private void handleSearchUser() {
+        System.out.println("Choose filters: ");
+        String filteredType = null;
+        String filteredFirstName = null;
+        String filteredLastName = null;
+        while (true) {
+            System.out.println("""
+                    1. Roll
+                    2. First name
+                    3. Last name
+                    4. Apply filters
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> {
+                    System.out.println("Enter (1) for student and (2) for teacher: ");
+                    int type = inI.nextInt();
+                    if (type == 1) {
+                        filteredType = "Student";
+                    } else if (type == 2) {
+                        filteredType = "Teacher";
+                    } else {
+                        System.out.println("Invalid");
+                    }
+                }
+                case 2 -> {
+                    System.out.println("Enter the pattern of the first name: ");
+                    filteredFirstName = inS.nextLine();
+                }
+                case 3 -> {
+                    System.out.println("Enter the pattern of the last name: ");
+                    filteredLastName = inS.nextLine();
+                }
+                case 4 -> {
+                    List<Person> filteredList = managerService.applyFilter(filteredType, filteredFirstName, filteredLastName);
+                    if (!filteredList.isEmpty()){
+                        filteredList.forEach(System.out::println);
+                    }else {
+                        System.out.println("Such person doesn't exist.");
+                    }
+                }
+            }
+        }
     }
 
     private void handleEditUser() {

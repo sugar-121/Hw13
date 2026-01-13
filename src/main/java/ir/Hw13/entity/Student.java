@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class Student extends Person {
 
