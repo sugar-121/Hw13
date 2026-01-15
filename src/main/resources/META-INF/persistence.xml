@@ -7,9 +7,10 @@
 
     <class>ir.Hw13.entity.Person</class>
     <class>ir.Hw13.entity.Manager</class>
-    <class>ir.Hw13.entity.BaseEntity</class>
+<!--    <class>ir.Hw13.entity.BaseEntity</class>-->
     <class>ir.Hw13.entity.Student</class>
     <class>ir.Hw13.entity.Teacher</class>
+    <class>ir.Hw13.entity.Course</class>
 
     <properties>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hw13"/>

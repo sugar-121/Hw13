@@ -6,8 +6,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,15 +60,18 @@ public class ManagerRepository {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Person> cbQuery = cb.createQuery(Person.class);
         Root<Person> root = cbQuery.from(Person.class);
+        List<Predicate> conditions = new ArrayList<>();
         if (!Objects.isNull(filteredType)) {
-            cbQuery.where(cb.equal(root.type(), filteredType));
+            conditions.add(cb.equal(root.type(),filteredType));
         }
         if (!Objects.isNull(filteredFirstName)) {
-            cbQuery.where(cb.like(root.get("firstName"), filteredFirstName + "%"));
+            conditions.add(cb.like(root.get("firstName"), filteredFirstName + "%"));
         }
         if (!Objects.isNull(filteredLastName)) {
-            cbQuery.where(cb.like(root.get("lastName"), filteredLastName + "%"));
+            conditions.add(cb.like(root.get("lastName"), filteredLastName + "%"));
         }
+
+        cbQuery.where(cb.and(conditions));
         return entityManager.createQuery(cbQuery).getResultList();
     }
 }
