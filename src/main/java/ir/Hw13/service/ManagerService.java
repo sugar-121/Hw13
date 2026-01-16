@@ -114,4 +114,14 @@ public class ManagerService {
             return false;
         }
     }
+
+    public void addTeacherToCourse(String title, long id) {
+        Teacher teacher = managerRepository.loadTeacherById(id);
+        Course course = managerRepository.fetchCourseByTitle(title);
+        if (!Objects.isNull(course)){
+            teacher.getCourses().add(course);
+            course.setTeacher(teacher);
+            managerRepository.addTeacherToCourse(teacher);
+        }
+    }
 }

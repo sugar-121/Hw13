@@ -3,6 +3,7 @@ package ir.Hw13.repository;
 import ir.Hw13.entity.Course;
 import ir.Hw13.entity.Person;
 import ir.Hw13.entity.Status;
+import ir.Hw13.entity.Teacher;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -100,4 +101,15 @@ public class ManagerRepository {
         entityManager.remove(course);
         entityManager.getTransaction().commit();
     }
+
+    public Teacher loadTeacherById(long id) {
+        return entityManager.find(Teacher.class, id);
+    }
+
+    public void addTeacherToCourse(Teacher teacher){
+        entityManager.getTransaction().begin();
+        entityManager.merge(teacher);
+        entityManager.getTransaction().commit();
+    }
+
 }

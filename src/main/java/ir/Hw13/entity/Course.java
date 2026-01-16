@@ -1,9 +1,6 @@
 package ir.Hw13.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,7 +13,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course  extends BaseEntity<Long>{
+public class Course extends BaseEntity<Long> {
 
     @Column
     private String title;
@@ -30,6 +27,7 @@ public class Course  extends BaseEntity<Long>{
     @ManyToMany
     private Set<Student> students;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY)
     private Teacher teacher;
 }

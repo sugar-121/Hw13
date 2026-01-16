@@ -67,7 +67,8 @@ public class Menu {
                     4. Search user
                     5. Add course
                     6. Drop course
-                    7. Back
+                    7. Set teacher for a course
+                    8. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -77,7 +78,9 @@ public class Menu {
                 case 4 -> handleSearchUser();
                 case 5 -> handleAddCourse();
                 case 6 -> handleDropCourse();
-                case 7 -> {
+                case 7 -> handleAddTeacherToCourse();
+                case 8 -> handleAddStudentToCourse();
+                case 9 -> {
                     return;
                 }
             }
@@ -86,12 +89,23 @@ public class Menu {
 
     }
 
+    private void handleAddStudentToCourse() {
+    }
+
+    private void handleAddTeacherToCourse() {
+        System.out.println("Enter the title of the course: ");
+        String title = inS.nextLine();
+        System.out.println("Enter the id of the teacher: ");
+        long id = inI.nextLong();
+        managerService.addTeacherToCourse(title, id);
+    }
+
     private void handleDropCourse() {
         System.out.println("Enter the title: ");
         String title = inS.nextLine();
-        if (managerService.dropCourse(title)){
+        if (managerService.dropCourse(title)) {
             System.out.println("Dropped successfully.");
-        }else {
+        } else {
             System.out.println("Course doesn't exist.");
         }
     }
@@ -106,9 +120,9 @@ public class Menu {
         String endingInput = inS.nextLine();
         LocalDate ending = LocalDate.parse(endingInput);
         CourseDto dto = new CourseDto(title, beginning, ending);
-        if (managerService.addCourse(dto)){
+        if (managerService.addCourse(dto)) {
             System.out.println("Added successfully");
-        }else {
+        } else {
             System.out.println("Some thing went wrong");
         }
     }
