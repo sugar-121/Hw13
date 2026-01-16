@@ -12,6 +12,9 @@ import ir.Hw13.service.TeacherServiceImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import java.util.Objects;
 
@@ -30,6 +33,8 @@ public class ApplicationContext {
 
     private ManagerService managerService;
     private ManagerRepository managerRepository;
+
+    private Validator validator;
 
     private PersonMapper personMapper;
 
@@ -116,5 +121,14 @@ public class ApplicationContext {
             personMapper = new PersonMapper();
         }
         return personMapper;
+    }
+
+    public Validator getValidator(){
+        if (Objects.isNull(validator)){
+            try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+                validator = validatorFactory.getValidator();
+            }
+        }
+        return validator;
     }
 }

@@ -1,5 +1,6 @@
 package ir.Hw13.ui;
 
+import ir.Hw13.dto.CourseDto;
 import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.entity.Person;
@@ -9,6 +10,8 @@ import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
 import ir.Hw13.util.ApplicationContext;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -62,7 +65,8 @@ public class Menu {
                     2. Submit sign up requests
                     3. Edit user
                     4. Search user
-                    5. Back
+                    5. Add course
+                    6. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -70,13 +74,31 @@ public class Menu {
                 case 2 -> handleSubmit();
                 case 3 -> handleEditUser();
                 case 4 -> handleSearchUser();
-                case 5 -> {
+                case 5 -> handleAddCourse();
+                case 6 -> {
                     return;
                 }
             }
 
         }
 
+    }
+
+    private void handleAddCourse() {
+        System.out.println("Enter the title of the course: ");
+        String title = inS.nextLine();
+        System.out.println("Enter the beginning date (yyyy-mm-dd): ");
+        String beginningInput = inS.nextLine();
+        LocalDate beginning = LocalDate.parse(beginningInput);
+        System.out.println("Enter the ending date (yyyy-mm-dd): ");
+        String endingInput = inS.nextLine();
+        LocalDate ending = LocalDate.parse(endingInput);
+        CourseDto dto = new CourseDto(title, beginning, ending);
+        if (managerService.addCourse(dto)){
+            System.out.println("Added successfully");
+        }else {
+            System.out.println("Some thing went wrong");
+        }
     }
 
     private void handleSearchUser() {
@@ -114,9 +136,9 @@ public class Menu {
                 }
                 case 4 -> {
                     List<Person> filteredList = managerService.applyFilter(filteredType, filteredFirstName, filteredLastName);
-                    if (!filteredList.isEmpty()){
+                    if (!filteredList.isEmpty()) {
                         filteredList.forEach(System.out::println);
-                    }else {
+                    } else {
                         System.out.println("Such person doesn't exist.");
                     }
                 }

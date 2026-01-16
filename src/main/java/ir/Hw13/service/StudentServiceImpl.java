@@ -19,9 +19,7 @@ public class StudentServiceImpl implements BaseService {
     private StudentMapper studentMapper;
 
     public StudentServiceImpl() {
-        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
-            this.validator = validatorFactory.getValidator();
-        }
+        this.validator = ApplicationContext.getInstance().getValidator();
         this.studentRepository = ApplicationContext.getInstance().getStudentRepository();
         this.studentMapper = ApplicationContext.getInstance().getStudentMapper();
     }

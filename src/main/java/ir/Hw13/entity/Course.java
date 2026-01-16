@@ -6,6 +6,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
@@ -21,10 +22,10 @@ public class Course  extends BaseEntity<Long>{
     private String title;
 
     @Column
-    private LocalDateTime begin;
+    private LocalDate begin;
 
     @Column
-    private LocalDateTime finish;
+    private LocalDate finish;
 
     @ManyToMany
     private Set<Student> students;

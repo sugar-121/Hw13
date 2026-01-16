@@ -1,6 +1,8 @@
 package ir.Hw13.service;
 
+import ir.Hw13.dto.CourseDto;
 import ir.Hw13.dto.PersonUpdateDto;
+import ir.Hw13.dto.mapper.CourseMapper;
 import ir.Hw13.dto.mapper.PersonMapper;
 import ir.Hw13.dto.mapper.StudentMapper;
 import ir.Hw13.dto.mapper.TeacherMapper;
@@ -16,9 +18,12 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ManagerService {
     private final EntityManager entityManager = ApplicationContext.getInstance().getEntityManager();
@@ -28,16 +33,10 @@ public class ManagerService {
     private final StudentMapper studentMapper = ApplicationContext.getInstance().getStudentMapper();
     private final StudentRepositoryImpl studentRepository = ApplicationContext.getInstance().getStudentRepository();
     private final TeacherRepositoryImpl teacherRepository = ApplicationContext.getInstance().getTeacherRepository();
+    private final Validator validator = ApplicationContext.getInstance().getValidator();
 
     public boolean logIn(long id, String password) {
-        TypedQuery<Long> query = entityManager.createQuery("select count(p) from Person p where p.id =: id and p.password =: password", Long.class);
-        query.setParameter("id", id);
-        query.setParameter("password", password);
-        if (query.getSingleResult() == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return managerRepository.logIn(id, password);
     }
 
     public List<String> loadSignUpRequests() {
@@ -88,5 +87,16 @@ public class ManagerService {
                                     String filteredLastName) {
         return managerRepository.applyFilter(filteredType, filteredFirstName, filteredLastName);
 
+    }
+
+    public boolean addCourse(CourseDto dto) {
+        Set<ConstraintViolation<CourseDto>> violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            violations.forEach(v -> System.out.println(v.getMessage()));
+            return false;
+        }
+        CourseMapper courseMapper = new CourseMapper();
+        managerRepository.addCourse(courseMapper.toEntity(dto));
+        return true;
     }
 }

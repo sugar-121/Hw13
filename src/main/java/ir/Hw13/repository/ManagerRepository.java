@@ -1,5 +1,6 @@
 package ir.Hw13.repository;
 
+import ir.Hw13.entity.Course;
 import ir.Hw13.entity.Person;
 import ir.Hw13.entity.Status;
 import jakarta.persistence.EntityManager;
@@ -18,6 +19,13 @@ public class ManagerRepository {
 
     public ManagerRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    public boolean logIn(long id, String password) {
+        TypedQuery<Long> query = entityManager.createQuery("select count(p) from Person p where p.id =: id and p.password =: password", Long.class);
+        query.setParameter("id", id);
+        query.setParameter("password", password);
+        return query.getSingleResult() == 1;
     }
 
     public List<Person> loadSignUpRequests() {
@@ -62,7 +70,7 @@ public class ManagerRepository {
         Root<Person> root = cbQuery.from(Person.class);
         List<Predicate> conditions = new ArrayList<>();
         if (!Objects.isNull(filteredType)) {
-            conditions.add(cb.equal(root.type(),filteredType));
+            conditions.add(cb.equal(root.type(), filteredType));
         }
         if (!Objects.isNull(filteredFirstName)) {
             conditions.add(cb.like(root.get("firstName"), filteredFirstName + "%"));
@@ -73,5 +81,11 @@ public class ManagerRepository {
 
         cbQuery.where(cb.and(conditions));
         return entityManager.createQuery(cbQuery).getResultList();
+    }
+
+    public void addCourse(Course course) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(course);
+        entityManager.getTransaction().commit();
     }
 }
