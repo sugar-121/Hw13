@@ -116,12 +116,21 @@ public class ManagerService {
     }
 
     public void addTeacherToCourse(String title, long id) {
-        Teacher teacher = managerRepository.loadTeacherById(id);
+        Person teacher = managerRepository.loadById(id);
         Course course = managerRepository.fetchCourseByTitle(title);
         if (!Objects.isNull(course)){
-            teacher.getCourses().add(course);
-            course.setTeacher(teacher);
-            managerRepository.addTeacherToCourse(teacher);
+            course.setTeacher((Teacher) teacher);
+            managerRepository.addToCourse(course);
+        }
+    }
+
+
+    public void addStudentToCourse(String title, long id) {
+        Person student = managerRepository.loadById(id);
+        Course course = managerRepository.fetchCourseByTitle(title);
+        if (!Objects.isNull(course)){
+            course.getStudents().add((Student) student);
+            managerRepository.addToCourse(course);
         }
     }
 }

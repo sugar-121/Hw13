@@ -106,10 +106,9 @@ public class ManagerRepository {
         return entityManager.find(Teacher.class, id);
     }
 
-    public void addTeacherToCourse(Teacher teacher){
+    public void addToCourse(Course course){
         entityManager.getTransaction().begin();
-        entityManager.merge(teacher);
+        entityManager.merge(course);
         entityManager.getTransaction().commit();
     }
-
 }

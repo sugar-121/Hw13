@@ -68,7 +68,8 @@ public class Menu {
                     5. Add course
                     6. Drop course
                     7. Set teacher for a course
-                    8. Back
+                    8. Add student to a course
+                    9. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -90,6 +91,12 @@ public class Menu {
     }
 
     private void handleAddStudentToCourse() {
+        System.out.println("Enter the title of the course: ");
+        String title = inS.nextLine();
+        System.out.println("Enter the id of the student: ");
+        long id = inI.nextLong();
+        managerService.addStudentToCourse(title, id);
+
     }
 
     private void handleAddTeacherToCourse() {
