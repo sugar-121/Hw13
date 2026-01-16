@@ -6,6 +6,7 @@ import ir.Hw13.dto.mapper.CourseMapper;
 import ir.Hw13.dto.mapper.PersonMapper;
 import ir.Hw13.dto.mapper.StudentMapper;
 import ir.Hw13.dto.mapper.TeacherMapper;
+import ir.Hw13.entity.Course;
 import ir.Hw13.entity.Person;
 import ir.Hw13.entity.Student;
 import ir.Hw13.entity.Teacher;
@@ -98,5 +99,19 @@ public class ManagerService {
         CourseMapper courseMapper = new CourseMapper();
         managerRepository.addCourse(courseMapper.toEntity(dto));
         return true;
+    }
+
+//    public Course fetchCourseByTitle(String title){
+//        return managerRepository.fetchCourseByTitle(title);
+//    }
+
+    public boolean dropCourse(String title){
+        Course fetchedCourse = managerRepository.fetchCourseByTitle(title);
+        if(!Objects.isNull(fetchedCourse)){
+            managerRepository.dropCourse(fetchedCourse);
+            return true;
+        }else {
+            return false;
+        }
     }
 }

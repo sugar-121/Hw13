@@ -88,4 +88,16 @@ public class ManagerRepository {
         entityManager.persist(course);
         entityManager.getTransaction().commit();
     }
+
+    public Course fetchCourseByTitle(String title){
+        TypedQuery<Course> query = entityManager.createQuery("select c from Course c where c.title =: title", Course.class);
+        query.setParameter("title",title);
+       return query.getSingleResultOrNull();
+    }
+
+    public void dropCourse(Course course) {
+        entityManager.getTransaction().begin();
+        entityManager.remove(course);
+        entityManager.getTransaction().commit();
+    }
 }

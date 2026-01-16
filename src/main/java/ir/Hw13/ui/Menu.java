@@ -66,7 +66,8 @@ public class Menu {
                     3. Edit user
                     4. Search user
                     5. Add course
-                    6. Back
+                    6. Drop course
+                    7. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -75,13 +76,24 @@ public class Menu {
                 case 3 -> handleEditUser();
                 case 4 -> handleSearchUser();
                 case 5 -> handleAddCourse();
-                case 6 -> {
+                case 6 -> handleDropCourse();
+                case 7 -> {
                     return;
                 }
             }
 
         }
 
+    }
+
+    private void handleDropCourse() {
+        System.out.println("Enter the title: ");
+        String title = inS.nextLine();
+        if (managerService.dropCourse(title)){
+            System.out.println("Dropped successfully.");
+        }else {
+            System.out.println("Course doesn't exist.");
+        }
     }
 
     private void handleAddCourse() {
