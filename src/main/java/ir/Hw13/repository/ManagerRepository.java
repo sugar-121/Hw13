@@ -20,7 +20,7 @@ public class ManagerRepository {
     }
 
     public boolean logIn(long id, String password) {
-        TypedQuery<Long> query = entityManager.createQuery("select count(p) from Person p where p.id =: id and p.password =: password", Long.class);
+        TypedQuery<Long> query = entityManager.createQuery("select count(p) from Manager p where p.id =: id and p.password =: password", long.class);
         query.setParameter("id", id);
         query.setParameter("password", password);
         return query.getSingleResult() == 1;

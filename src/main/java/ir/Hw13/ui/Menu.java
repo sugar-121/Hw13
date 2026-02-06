@@ -4,6 +4,7 @@ import ir.Hw13.dto.CourseDto;
 import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.entity.Person;
+import ir.Hw13.entity.Roll;
 import ir.Hw13.entity.Status;
 import ir.Hw13.entity.Student;
 import ir.Hw13.service.ManagerService;
@@ -33,7 +34,7 @@ public class Menu {
         while (true) {
             System.out.println("""
                     1. Sign up(student/teacher)
-                    2. Log in (only for manager)
+                    2. Log in
                     3. Exit
                     """);
             int choice = inI.nextInt();
@@ -49,17 +50,56 @@ public class Menu {
     }
 
     private void handleLogIn() {
+        System.out.println("""
+                Choose your roll:
+                1. Manager
+                2. Teacher
+                3. Student
+                4. Back
+                """);
+
+        int choice = inI.nextInt();
+        Roll roll = null;
+        switch (choice) {
+            case 1 -> roll = Roll.MANAGER;
+            case 2 -> roll = Roll.TEACHER;
+            case 3 -> roll = Roll.STUDENT;
+            case 4-> {
+                return;
+            }
+        }
         System.out.println("Enter your id: ");
         long id = inI.nextLong();
         System.out.println("Enter your password: ");
         String password = inS.nextLine();
 
-        if (managerService.logIn(id, password)) {
-            showManagerMenu();
-        } else {
-            System.out.println("Wrong input!");
+        switch (roll) {
+            case MANAGER -> {
+                if (managerService.logIn(id, password)) {
+                    showManagerMenu();
+                } else {
+                    System.out.println("Wrong input!");
+                }
+            }
+            case TEACHER -> {
+                if (teacherService.logIn(id, password)){
+                    showTeacherMenu();
+                }else {
+                    System.out.println("Wrong input!");
+                }
+            }
+            case STUDENT -> System.out.println("student");
+            case null -> System.out.println("wrong input");
         }
 
+
+    }
+
+    private void showTeacherMenu() {
+        System.out.println("hello teacher...");
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        teacherService.showTeacherCourses(teacherId);
     }
 
     private void showManagerMenu() {
