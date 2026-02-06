@@ -13,12 +13,12 @@ import ir.Hw13.entity.Teacher;
 import ir.Hw13.repository.ManagerRepository;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.repository.TeacherRepositoryImpl;
+import ir.Hw13.service.exceptions.CourseNotFoundException;
+import ir.Hw13.service.exceptions.NotAStudentException;
+import ir.Hw13.service.exceptions.NotATeacherException;
+import ir.Hw13.service.exceptions.PersonNotFoundException;
 import ir.Hw13.util.ApplicationContext;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
@@ -27,14 +27,16 @@ import java.util.Objects;
 import java.util.Set;
 
 public class ManagerService {
-    private final EntityManager entityManager = ApplicationContext.getInstance().getEntityManager();
-    private final ManagerRepository managerRepository = ApplicationContext.getInstance().getManagerRepository();
-    private final PersonMapper personMapper = ApplicationContext.getInstance().getPersonMapper();
-    private final TeacherMapper teacherMapper = ApplicationContext.getInstance().getTeacherMapper();
+    private final ApplicationContext context = ApplicationContext.getInstance();
+    private final EntityManager entityManager = context.getEntityManager();
+    private final ManagerRepository managerRepository = context.getManagerRepository();
+    private final PersonMapper personMapper = context.getPersonMapper();
+    private final TeacherMapper teacherMapper = context.getTeacherMapper();
     private final StudentMapper studentMapper = ApplicationContext.getInstance().getStudentMapper();
-    private final StudentRepositoryImpl studentRepository = ApplicationContext.getInstance().getStudentRepository();
-    private final TeacherRepositoryImpl teacherRepository = ApplicationContext.getInstance().getTeacherRepository();
-    private final Validator validator = ApplicationContext.getInstance().getValidator();
+    private final StudentRepositoryImpl studentRepository = context.getStudentRepository();
+    private final TeacherRepositoryImpl teacherRepository = context.getTeacherRepository();
+    private final Validator validator = context.getValidator();
+    private final CourseMapper courseMapper = context.getCourseMapper();
 
     public boolean logIn(long id, String password) {
         return managerRepository.logIn(id, password);
@@ -52,7 +54,7 @@ public class ManagerService {
     }
 
     public void submitOne(long id) {
-        Person person = entityManager.find(Person.class, id);
+        Person person = managerRepository.loadById(id);
         Person submitted = personMapper.submitOne(person);
         managerRepository.submitOne(submitted);
 
@@ -68,6 +70,7 @@ public class ManagerService {
             managerRepository.update(mapped);
 
         } else if (dto.getRoll().equals("Student")) {
+
             Student mapped = teacherMapper.mapTeacherToStudent(dto, fetchedPerson);
             deleteUser(fetchedPerson);
             studentRepository.signUp(mapped);
@@ -105,32 +108,91 @@ public class ManagerService {
 //        return managerRepository.fetchCourseByTitle(title);
 //    }
 
-    public boolean dropCourse(String title){
+    public boolean dropCourse(String title) {
         Course fetchedCourse = managerRepository.fetchCourseByTitle(title);
-        if(!Objects.isNull(fetchedCourse)){
+        if (!Objects.isNull(fetchedCourse)) {
             managerRepository.dropCourse(fetchedCourse);
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    public void addTeacherToCourse(String title, long id) {
-        Person teacher = managerRepository.loadById(id);
+    public int addTeacherToCourse(String title, long id) {
+        Person person = managerRepository.loadById(id);
         Course course = managerRepository.fetchCourseByTitle(title);
-        if (!Objects.isNull(course)){
-            course.setTeacher((Teacher) teacher);
-            managerRepository.addToCourse(course);
+        if (person != null) {
+            if (person instanceof Teacher teacher) {
+                if (!Objects.isNull(course)) {
+                    course.setTeacher(teacher);
+                    managerRepository.changeToCourse(course);
+                } else {
+                    throw new CourseNotFoundException(title);
+                }
+            } else {
+                throw new NotATeacherException(id);
+            }
+        } else {
+            throw new PersonNotFoundException(id);
         }
+        return 1;
     }
 
-
-    public void addStudentToCourse(String title, long id) {
-        Person student = managerRepository.loadById(id);
-        Course course = managerRepository.fetchCourseByTitle(title);
-        if (!Objects.isNull(course)){
-            course.getStudents().add((Student) student);
-            managerRepository.addToCourse(course);
+    public void show() {
+        Person teacher = managerRepository.loadById(4);
+        Set<Course> courses = ((Teacher) teacher).getCourses();
+        for (Course course : courses) {
+            System.out.println(course.getTeacher().getFirstName());
         }
+
+    }
+
+    public int addStudentToCourse(String title, long id) {
+        Person person = managerRepository.loadById(id);
+        Course course = managerRepository.fetchCourseByTitle(title);
+        if (person != null) {
+            if (person instanceof Student student) {
+                if (!Objects.isNull(course)) {
+                    course.getStudents().add(student);
+                    managerRepository.changeToCourse(course);
+                } else {
+                    throw new CourseNotFoundException(title);
+                }
+            } else {
+                throw new NotAStudentException(id);
+            }
+        } else {
+            throw new PersonNotFoundException(id);
+        }
+        return 1;
+    }
+
+    public void loadCourseByTitle(String courseTitle) {
+        Course fetchedCourse = managerRepository.fetchCourseByTitle(courseTitle);
+        courseMapper.loadCourse(fetchedCourse);
+    }
+
+    public void removeTeacherFromCourse(String title) {
+        Course course = managerRepository.fetchCourseByTitle(title);
+        course.setTeacher(null);
+        managerRepository.changeToCourse(course);
+    }
+
+    public void removeStudentFromCourse(int studentId, String courseTitle) {
+        Course course = managerRepository.fetchCourseByTitle(courseTitle);
+        Student student = managerRepository.loadStudentById(studentId);
+        course.getStudents().remove(student);
+        managerRepository.changeToCourse(course);
+    }
+
+    public boolean isStudentInvolvedInCourses(long id) {
+        List<Long> courseIds = managerRepository.fetchStudentCourses(id);
+        return !courseIds.isEmpty();
+    }
+
+    public boolean isTeacherInvolvedInCourses(long id) {
+        List<Long> courseIds = managerRepository.fetchTeacherCourses(id);
+        return !courseIds.isEmpty();
     }
 }
+

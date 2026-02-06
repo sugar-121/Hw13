@@ -10,13 +10,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+
 @Entity
 @Getter
 @Setter
 public class Teacher extends Person {
 
     @OneToMany(mappedBy = "teacher",
-            cascade = CascadeType.PERSIST,
+            cascade = {PERSIST,MERGE},
             fetch = FetchType.LAZY)
     private Set<Course> courses;
 

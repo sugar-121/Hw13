@@ -5,6 +5,7 @@ import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.entity.Person;
 import ir.Hw13.entity.Status;
+import ir.Hw13.entity.Student;
 import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
@@ -18,9 +19,9 @@ import java.util.Scanner;
 public class Menu {
     Scanner inI = new Scanner(System.in);
     Scanner inS = new Scanner(System.in);
-    private StudentServiceImpl studentService;
-    private TeacherServiceImpl teacherService;
-    private ManagerService managerService;
+    private final StudentServiceImpl studentService;
+    private final TeacherServiceImpl teacherService;
+    private final ManagerService managerService;
 
     public Menu() {
         this.studentService = ApplicationContext.getInstance().getStudentService();
@@ -33,11 +34,15 @@ public class Menu {
             System.out.println("""
                     1. Sign up(student/teacher)
                     2. Log in (only for manager)
+                    3. Exit
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> handleSignUp();
                 case 2 -> handleLogIn();
+                case 3 -> {
+                    return;
+                }
             }
 
         }
@@ -69,7 +74,10 @@ public class Menu {
                     6. Drop course
                     7. Set teacher for a course
                     8. Add student to a course
-                    9. Back
+                    9. Show course
+                    10. Remove teacher from course
+                    11. Remove student from course
+                    12. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -81,7 +89,10 @@ public class Menu {
                 case 6 -> handleDropCourse();
                 case 7 -> handleAddTeacherToCourse();
                 case 8 -> handleAddStudentToCourse();
-                case 9 -> {
+                case 9 -> handleShowCourse();
+                case 10 -> handleRemoveTeacherFromCourse();
+                case 11 -> handleRemoveStudentFromCourse();
+                case 12 -> {
                     return;
                 }
             }
@@ -90,13 +101,39 @@ public class Menu {
 
     }
 
+    private void handleRemoveStudentFromCourse() {
+        System.out.println("Enter the student id: ");
+        int studentId = inI.nextInt();
+        System.out.println("Enter the course name: ");
+        String courseTitle = inS.nextLine();
+        managerService.removeStudentFromCourse(studentId, courseTitle);
+    }
+
+    private void handleRemoveTeacherFromCourse() {
+        System.out.println("Enter the course's title: ");
+        String title = inS.nextLine();
+        managerService.removeTeacherFromCourse(title);
+
+    }
+
+    private void handleShowCourse() {
+        System.out.println("Enter the title of the course: ");
+        String courseTitle = inS.nextLine();
+        managerService.loadCourseByTitle(courseTitle);
+    }
+
     private void handleAddStudentToCourse() {
+        //managerService.show();
         System.out.println("Enter the title of the course: ");
         String title = inS.nextLine();
         System.out.println("Enter the id of the student: ");
         long id = inI.nextLong();
-        managerService.addStudentToCourse(title, id);
-
+        try {
+            int isAdded = managerService.addStudentToCourse(title, id);
+            if (isAdded == 1) System.out.println("Added successfully.");
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void handleAddTeacherToCourse() {
@@ -104,7 +141,12 @@ public class Menu {
         String title = inS.nextLine();
         System.out.println("Enter the id of the teacher: ");
         long id = inI.nextLong();
-        managerService.addTeacherToCourse(title, id);
+        try {
+            int isAdded = managerService.addTeacherToCourse(title, id);
+            if (isAdded == 1) System.out.println("Added successfully.");
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void handleDropCourse() {
@@ -183,7 +225,7 @@ public class Menu {
         System.out.println("Enter the id of the user: ");
         long id = inI.nextLong();
         Person fetchedPerson = managerService.loadById(id);
-        System.out.println(fetchedPerson);
+        System.out.println(fetchedPerson + "Roll: " + fetchedPerson.getClass().getSimpleName());
         String newFirstName = null;
         String newLastName = null;
         String newRoll = null;
@@ -207,12 +249,22 @@ public class Menu {
                     newLastName = inS.nextLine();
                 }
                 case 3 -> {
-                    System.out.println("You changed the roll.");
                     if (fetchedPerson.getClass().getSimpleName().equals("Student")) {
-                        newRoll = "Teacher";
+                        if (managerService.isStudentInvolvedInCourses(id)) {
+                            System.out.println("Can't change the roll. Student is involved in a course. ");
+                        } else {
+                            newRoll = "Teacher";
+                            System.out.println("You changed the roll.");
+                        }
                     } else {
-                        newRoll = "Student";
+                        if (managerService.isTeacherInvolvedInCourses(id)) {
+                            System.out.println("Can't change the roll. Teacher is involved in a course. ");
+                        } else {
+                            newRoll = "Student";
+                            System.out.println("You changed the roll.");
+                        }
                     }
+
                 }
                 case 4 -> {
                     PersonUpdateDto personUpdateDto = new PersonUpdateDto(newFirstName, newLastName, newRoll);
@@ -272,7 +324,7 @@ public class Menu {
                 roll = inI.nextInt();
             }
         } while (!isValid);
-        boolean isDone = false;
+        boolean isDone;
         PersonSignUpDto signUpDto = new PersonSignUpDto();
         signUpDto.setFirstName(firstName);
         signUpDto.setLastName(lastName);

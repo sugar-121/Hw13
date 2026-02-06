@@ -14,9 +14,9 @@ import java.util.Set;
 
 public class StudentServiceImpl implements BaseService {
 
-    private Validator validator;
-    private StudentRepositoryImpl studentRepository;
-    private StudentMapper studentMapper;
+    private final Validator validator;
+    private final StudentRepositoryImpl studentRepository;
+    private final StudentMapper studentMapper;
 
     public StudentServiceImpl() {
         this.validator = ApplicationContext.getInstance().getValidator();

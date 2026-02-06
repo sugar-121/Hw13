@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Setter
 @Getter
@@ -27,7 +31,7 @@ public class Course extends BaseEntity<Long> {
     @ManyToMany
     private Set<Student> students;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {PERSIST,MERGE},
+            fetch = LAZY)
     private Teacher teacher;
 }

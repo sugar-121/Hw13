@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager;
 
 public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public TeacherRepositoryImpl(EntityManager entityManager){
         this.entityManager = entityManager;

@@ -2,10 +2,9 @@ package ir.Hw13.dto.mapper;
 
 import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
-import ir.Hw13.entity.Person;
-import ir.Hw13.entity.Status;
-import ir.Hw13.entity.Student;
-import ir.Hw13.entity.Teacher;
+import ir.Hw13.entity.*;
+
+import java.util.Set;
 
 public class TeacherMapper{
 

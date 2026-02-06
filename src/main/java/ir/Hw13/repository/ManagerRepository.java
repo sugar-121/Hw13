@@ -1,9 +1,6 @@
 package ir.Hw13.repository;
 
-import ir.Hw13.entity.Course;
-import ir.Hw13.entity.Person;
-import ir.Hw13.entity.Status;
-import ir.Hw13.entity.Teacher;
+import ir.Hw13.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -90,10 +87,10 @@ public class ManagerRepository {
         entityManager.getTransaction().commit();
     }
 
-    public Course fetchCourseByTitle(String title){
+    public Course fetchCourseByTitle(String title) {
         TypedQuery<Course> query = entityManager.createQuery("select c from Course c where c.title =: title", Course.class);
-        query.setParameter("title",title);
-       return query.getSingleResultOrNull();
+        query.setParameter("title", title);
+        return query.getSingleResultOrNull();
     }
 
     public void dropCourse(Course course) {
@@ -106,9 +103,38 @@ public class ManagerRepository {
         return entityManager.find(Teacher.class, id);
     }
 
-    public void addToCourse(Course course){
+    public Student loadStudentById(long id) {
+        return entityManager.find(Student.class, id);
+    }
+
+//    public void addTeacherToCourse(Teacher teacher){
+//        entityManager.getTransaction().begin();
+//        entityManager.merge(teacher);
+//        entityManager.getTransaction().commit();
+//    }
+//
+//    public void addStudentToCourse(Course course) {
+//        entityManager.getTransaction().begin();
+//        entityManager.merge(course);
+//        entityManager.getTransaction().commit();
+//    }
+
+    public void changeToCourse(Course course) {
         entityManager.getTransaction().begin();
         entityManager.merge(course);
         entityManager.getTransaction().commit();
+    }
+
+    public List<Long> fetchStudentCourses(long id) {
+        TypedQuery<Long> query = entityManager.createQuery("select c.id from Student s join s.courses c where s.id = : id", Long.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
+
+    public List<Long> fetchTeacherCourses(long id) {
+        TypedQuery<Long> query = entityManager.createQuery("select c.id from Course c where c.teacher.id = : id", Long.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+
     }
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.EntityManager;
 
 public class StudentRepositoryImpl implements BaseRepository<Student> {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public StudentRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -17,4 +17,6 @@ public class StudentRepositoryImpl implements BaseRepository<Student> {
         entityManager.persist(student);
         entityManager.getTransaction().commit();
     }
+
+
 }

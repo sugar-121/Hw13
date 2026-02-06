@@ -14,8 +14,8 @@ import java.util.Set;
 
 public class TeacherServiceImpl implements BaseService {
 
-    private Validator validator;
-    private TeacherRepositoryImpl teacherRepository;
+    private final Validator validator;
+    private final TeacherRepositoryImpl teacherRepository;
     TeacherMapper signUpTeacherMapper;
 
 

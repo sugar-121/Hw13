@@ -1,5 +1,6 @@
 package ir.Hw13.util;
 
+import ir.Hw13.dto.mapper.CourseMapper;
 import ir.Hw13.dto.mapper.PersonMapper;
 import ir.Hw13.dto.mapper.StudentMapper;
 import ir.Hw13.dto.mapper.TeacherMapper;
@@ -37,6 +38,7 @@ public class ApplicationContext {
     private Validator validator;
 
     private PersonMapper personMapper;
+    private CourseMapper courseMapper;
 
     private ApplicationContext(){}
 
@@ -130,5 +132,12 @@ public class ApplicationContext {
             }
         }
         return validator;
+    }
+
+    public CourseMapper getCourseMapper(){
+        if (Objects.isNull(courseMapper)){
+            courseMapper = new CourseMapper();
+        }
+        return courseMapper;
     }
 }
