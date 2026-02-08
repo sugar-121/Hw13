@@ -23,6 +23,7 @@ public class Teacher extends Person {
             fetch = FetchType.LAZY)
     private Set<Course> courses;
 
+
     public Teacher() {
         this.courses = new HashSet<>();
     }

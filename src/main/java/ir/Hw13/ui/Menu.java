@@ -100,6 +100,10 @@ public class Menu {
         System.out.println("Enter your id: ");
         long teacherId = inI.nextLong();
         teacherService.showTeacherCourses(teacherId);
+        System.out.println("""
+                1. Show all the tests of a course
+                2. Show the tests you created for a course
+                """);
     }
 
     private void showManagerMenu() {

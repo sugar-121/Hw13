@@ -34,4 +34,7 @@ public class Course extends BaseEntity<Long> {
     @ManyToOne(cascade = {PERSIST,MERGE},
             fetch = LAZY)
     private Teacher teacher;
+
+    @OneToMany(mappedBy = "course")
+    private Set<Tests> tests;
 }
