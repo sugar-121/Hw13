@@ -137,4 +137,8 @@ public class ManagerRepository {
         return query.getResultList();
 
     }
+
+    public Course loadCourseById(long id) {
+       return entityManager.find(Course.class,id);
+    }
 }

@@ -37,4 +37,7 @@ public class Course extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "course")
     private Set<Tests> tests;
+
+    @OneToMany(mappedBy = "course")
+    private Set<Questions> questions;
 }

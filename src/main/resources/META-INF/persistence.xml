@@ -12,6 +12,12 @@
     <class>ir.Hw13.entity.Teacher</class>
     <class>ir.Hw13.entity.Course</class>
     <class>ir.Hw13.entity.Tests</class>
+    <class>ir.Hw13.entity.Choice</class>
+    <class>ir.Hw13.entity.Questions</class>
+    <class>ir.Hw13.entity.MultipleChoiceQuestion</class>
+    <class>ir.Hw13.entity.DescriptiveQuestion</class>
+    <class>ir.Hw13.entity.TestQuestion</class>
+
 
     <properties>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/hw13"/>

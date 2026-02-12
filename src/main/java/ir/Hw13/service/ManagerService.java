@@ -60,8 +60,12 @@ public class ManagerService {
 
     }
 
-    public Person loadById(long id) {
+    public Person loadPersonById(long id) {
         return managerRepository.loadById(id);
+    }
+
+    public Course loadCourseById(long id){
+        return managerRepository.loadCourseById(id);
     }
 
     public void updateUser(PersonUpdateDto dto, Person fetchedPerson) {
@@ -73,12 +77,12 @@ public class ManagerService {
 
             Student mapped = teacherMapper.mapTeacherToStudent(dto, fetchedPerson);
             deleteUser(fetchedPerson);
-            studentRepository.signUp(mapped);
+            studentRepository.save(mapped);
 
         } else {
             Teacher mapped = studentMapper.mapStudentToTeacher(dto, fetchedPerson);
             deleteUser(fetchedPerson);
-            teacherRepository.signUp(mapped);
+            teacherRepository.save(mapped);
         }
     }
 
@@ -107,6 +111,8 @@ public class ManagerService {
 //    public Course fetchCourseByTitle(String title){
 //        return managerRepository.fetchCourseByTitle(title);
 //    }
+
+
 
     public boolean dropCourse(String title) {
         Course fetchedCourse = managerRepository.fetchCourseByTitle(title);

@@ -6,9 +6,7 @@ import ir.Hw13.entity.Student;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.util.ApplicationContext;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 
 import java.util.Set;
 
@@ -32,7 +30,7 @@ public class StudentServiceImpl implements BaseService {
             return false;
         }
         Student student = studentMapper.toEntityS(dto);
-        studentRepository.signUp(student);
+        studentRepository.save(student);
         return true;
     }
 }

@@ -1,12 +1,11 @@
 package ir.Hw13.util;
 
-import ir.Hw13.dto.mapper.CourseMapper;
-import ir.Hw13.dto.mapper.PersonMapper;
-import ir.Hw13.dto.mapper.StudentMapper;
-import ir.Hw13.dto.mapper.TeacherMapper;
+import ir.Hw13.dto.mapper.*;
+import ir.Hw13.repository.CourseRepository;
 import ir.Hw13.repository.ManagerRepository;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.repository.TeacherRepositoryImpl;
+import ir.Hw13.service.CourseService;
 import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
@@ -34,6 +33,11 @@ public class ApplicationContext {
 
     private ManagerService managerService;
     private ManagerRepository managerRepository;
+
+    private CourseService courseService;
+    private CourseRepository courseRepository;
+
+    private TestMapper testMapper;
 
     private Validator validator;
 
@@ -139,5 +143,26 @@ public class ApplicationContext {
             courseMapper = new CourseMapper();
         }
         return courseMapper;
+    }
+
+    public CourseService getCourseService(){
+        if (Objects.isNull(courseService)){
+            courseService = new CourseService();
+        }
+        return courseService;
+    }
+
+    public CourseRepository getCourseRepository() {
+        if (Objects.isNull(courseRepository)){
+            courseRepository = new CourseRepository(getEntityManager());
+        }
+        return courseRepository;
+    }
+
+    public TestMapper getTestMapper() {
+        if (Objects.isNull(testMapper)){
+            testMapper = new TestMapper();
+        }
+        return testMapper;
     }
 }

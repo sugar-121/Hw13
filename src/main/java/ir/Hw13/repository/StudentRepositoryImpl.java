@@ -12,7 +12,7 @@ public class StudentRepositoryImpl implements BaseRepository<Student> {
     }
 
     @Override
-    public void signUp(Student student) {
+    public void save(Student student) {
         entityManager.getTransaction().begin();
         entityManager.persist(student);
         entityManager.getTransaction().commit();

@@ -1,14 +1,17 @@
 package ir.Hw13.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Setter
@@ -22,12 +25,17 @@ public class Tests extends BaseEntity<Long> {
     private String description;
 
     @Column
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
 
-    @ManyToOne
+    @ManyToOne(cascade = {PERSIST,MERGE},
+            fetch = LAZY)
     private Teacher teacher;
 
-    @ManyToOne
+    @ManyToOne(cascade = {PERSIST,MERGE},
+            fetch = LAZY)
     private Course course;
+
+    @OneToMany(mappedBy = "tests")
+    private Set<TestQuestion> testQuestions;
 
 }

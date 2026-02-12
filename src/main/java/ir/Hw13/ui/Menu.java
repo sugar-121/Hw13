@@ -3,19 +3,16 @@ package ir.Hw13.ui;
 import ir.Hw13.dto.CourseDto;
 import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
-import ir.Hw13.entity.Person;
-import ir.Hw13.entity.Roll;
-import ir.Hw13.entity.Status;
-import ir.Hw13.entity.Student;
+import ir.Hw13.dto.TestDto;
+import ir.Hw13.entity.*;
+import ir.Hw13.service.CourseService;
 import ir.Hw13.service.ManagerService;
 import ir.Hw13.service.StudentServiceImpl;
 import ir.Hw13.service.TeacherServiceImpl;
 import ir.Hw13.util.ApplicationContext;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Menu {
     Scanner inI = new Scanner(System.in);
@@ -23,11 +20,13 @@ public class Menu {
     private final StudentServiceImpl studentService;
     private final TeacherServiceImpl teacherService;
     private final ManagerService managerService;
+    private final CourseService courseService;
 
     public Menu() {
         this.studentService = ApplicationContext.getInstance().getStudentService();
         this.teacherService = ApplicationContext.getInstance().getTeacherService();
         this.managerService = ApplicationContext.getInstance().getManagerService();
+        this.courseService = ApplicationContext.getInstance().getCourseService();
     }
 
     public void start() {
@@ -64,7 +63,7 @@ public class Menu {
             case 1 -> roll = Roll.MANAGER;
             case 2 -> roll = Roll.TEACHER;
             case 3 -> roll = Roll.STUDENT;
-            case 4-> {
+            case 4 -> {
                 return;
             }
         }
@@ -82,9 +81,9 @@ public class Menu {
                 }
             }
             case TEACHER -> {
-                if (teacherService.logIn(id, password)){
+                if (teacherService.logIn(id, password)) {
                     showTeacherMenu();
-                }else {
+                } else {
                     System.out.println("Wrong input!");
                 }
             }
@@ -100,10 +99,141 @@ public class Menu {
         System.out.println("Enter your id: ");
         long teacherId = inI.nextLong();
         teacherService.showTeacherCourses(teacherId);
+        while (true) {
+            System.out.println("""
+                    1. Show all the tests of the course
+                    2. Show the tests you created for a course
+                    3. Add test to course
+                    4. Edit test
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> handleShowCourseTests();
+                case 2 -> handleTeacherTests();
+                case 3 -> handleAddTest();
+                case 4 -> handleEditTest();
+            }
+        }
+    }
+
+    private void handleEditTest() {
         System.out.println("""
-                1. Show all the tests of a course
-                2. Show the tests you created for a course
+                1.Add questions to test
                 """);
+        int choice = inI.nextInt();
+        switch (choice) {
+            case 1 -> handleAddQuestionToTest();
+        }
+    }
+
+    private void handleAddQuestionToTest() {
+        System.out.println("""
+                1. Choose from question bank
+                2. Add a new question
+                3. Back
+                """);
+        int choice = inI.nextInt();
+        switch (choice) {
+            case 2 -> {
+                System.out.println("""
+                        1. Multiple Choice Question
+                        2. Descriptive Question
+                        """);
+                int qType = inI.nextInt();
+                if (qType == 1) {
+                    handleAddMCQs();
+                } else if (qType == 2) {
+                    handleAddDQ();
+                } else {
+                    System.out.println("Invalid input.");
+                }
+            }
+
+        }
+
+    }
+
+    private void handleAddDQ() {
+    }
+
+
+    private void handleAddMCQs() {
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        System.out.println("Enter the title of the question: ");
+        String title = inS.nextLine();
+        System.out.println("Enter the question text: ");
+        String text = inS.nextLine();
+        Map<Choice, Boolean> choiceList = handleMakeChoices();
+        System.out.println("Enter the answer: ");
+        int answer = inI.nextInt();
+        teacherService.makeMCQs(teacherId, courseId, title, text, choiceList, answer);
+
+
+    }
+
+    private Map<Choice, Boolean> handleMakeChoices() {
+        Map<Choice, Boolean> choiceList = new HashMap<>();
+        int counter = 0;
+        while (true) {
+            if (counter >= 2) {
+                System.out.println("Enter -1 to exit or 1 to continue: ");
+                int exit = inI.nextInt();
+                if (exit == -1) {
+                    return choiceList;
+                }
+            }
+            System.out.println("Enter the choice: ");
+            String text = inS.nextLine();
+
+            System.out.println("""
+                    Is it the answer?
+                    1. yes
+                    2. no
+                    """);
+            int isAnswerI = Integer.parseInt(inS.nextLine());
+            boolean isAnswerB = false;
+            if (isAnswerI == 1) {
+                isAnswerB = true;
+            }
+            choiceList.put(teacherService.makeChoice(text),isAnswerB);
+            counter++;
+        }
+    }
+
+
+    private void handleAddTest() {
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        System.out.println("Enter the title: ");
+        String title = inS.nextLine();
+        System.out.println("Enter the description: ");
+        String description = inS.nextLine();
+        System.out.println("Enter the date(yyyy-mm-dd): ");
+        String inputDate = inS.nextLine();
+        LocalDate date = LocalDate.parse(inputDate);
+        Person person = managerService.loadPersonById(teacherId);
+        Course course = managerService.loadCourseById(courseId);
+        TestDto dto = new TestDto(title, description, date, (Teacher) person, course);
+        teacherService.AddTest(dto);
+    }
+
+    private void handleTeacherTests() {
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        teacherService.showTeacherTests(teacherId, courseId);
+    }
+
+    private void handleShowCourseTests() {
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        courseService.showCourseTests(courseId);
     }
 
     private void showManagerMenu() {
@@ -268,7 +398,7 @@ public class Menu {
     private void handleEditUser() {
         System.out.println("Enter the id of the user: ");
         long id = inI.nextLong();
-        Person fetchedPerson = managerService.loadById(id);
+        Person fetchedPerson = managerService.loadPersonById(id);
         System.out.println(fetchedPerson + "Roll: " + fetchedPerson.getClass().getSimpleName());
         String newFirstName = null;
         String newLastName = null;

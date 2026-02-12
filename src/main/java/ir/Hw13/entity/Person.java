@@ -4,13 +4,15 @@ package ir.Hw13.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
+
 @Entity
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = SINGLE_TABLE)
 public class Person extends BaseEntity<Long>{
 
     @Column(name = "first_name")

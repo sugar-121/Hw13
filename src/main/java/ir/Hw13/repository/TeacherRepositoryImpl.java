@@ -1,7 +1,7 @@
 package ir.Hw13.repository;
 
-import ir.Hw13.entity.Course;
-import ir.Hw13.entity.Teacher;
+import ir.Hw13.dto.TestDto;
+import ir.Hw13.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -16,7 +16,7 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
     }
 
     @Override
-    public void signUp(Teacher teacher) {
+    public void save(Teacher teacher) {
         entityManager.getTransaction().begin();
         entityManager.persist(teacher);
         entityManager.getTransaction().commit();
@@ -33,5 +33,31 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
         TypedQuery<Course> query = entityManager.createQuery("select c from Course c where teacher.id = :id", Course.class);
         query.setParameter("id", teacherId);
         return query.getResultList();
+    }
+
+    public List<Tests> fetchTeacherTests(long teacherId, long courseId) {
+        TypedQuery<Tests> query = entityManager.createQuery("select t from Tests t where teacher.id = : teacherId and course.id = : courseId", Tests.class);
+        query.setParameter("teacherId" , teacherId);
+        query.setParameter("courseId" , courseId);
+        return query.getResultList();
+    }
+
+
+    public void AddTest(Tests test) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(test);
+        entityManager.getTransaction().commit();
+    }
+
+    public void addMCQ(MultipleChoiceQuestion mcq) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(mcq);
+        entityManager.getTransaction().commit();
+    }
+
+    public void makeChoice(Choice choice) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(choice);
+        entityManager.getTransaction().commit();
     }
 }
