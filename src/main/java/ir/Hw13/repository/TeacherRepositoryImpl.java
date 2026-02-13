@@ -1,6 +1,5 @@
 package ir.Hw13.repository;
 
-import ir.Hw13.dto.TestDto;
 import ir.Hw13.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -59,5 +58,22 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
         entityManager.getTransaction().begin();
         entityManager.persist(choice);
         entityManager.getTransaction().commit();
+    }
+
+    public Tests loadTestById(long id) {
+        return entityManager.find(Tests.class,id);
+    }
+
+    public void addQToTest(TestQuestion testQuestion) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(testQuestion);
+        entityManager.getTransaction().commit();
+    }
+
+    public List<Questions> loadCourseQBForTeacher(long teacherId, long courseId) {
+        TypedQuery<Questions> query = entityManager.createQuery("select q from Questions q where q.teacher.id = :teacherId and q.course.id = :courseId", Questions.class);
+        query.setParameter("teacherId", teacherId);
+        query.setParameter("courseId", courseId);
+        return query.getResultList();
     }
 }

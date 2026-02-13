@@ -13,6 +13,7 @@ import ir.Hw13.util.ApplicationContext;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Menu {
     Scanner inI = new Scanner(System.in);
@@ -134,6 +135,7 @@ public class Menu {
                 """);
         int choice = inI.nextInt();
         switch (choice) {
+            case 1 -> handleAddFromQB();
             case 2 -> {
                 System.out.println("""
                         1. Multiple Choice Question
@@ -153,7 +155,49 @@ public class Menu {
 
     }
 
+    private void handleAddFromQB() {
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        System.out.println("Enter the test id: ");
+        long testId = inI.nextLong();
+        Tests test = teacherService.loadTestById(testId);
+
+        List<Questions> qbForTeacher = teacherService.loadCourseQBForTeacher(teacherId, courseId);
+        Map<Long, Questions> qMap = qbForTeacher.stream().collect(Collectors.toMap(BaseEntity::getId, questions -> questions));
+
+        for (Questions question : qbForTeacher) {
+            System.out.println("question id : " + question.getId());
+            System.out.println("question Text : " + question.getText());
+            System.out.println("---------------------------------------");
+        }
+        while (true) {
+            System.out.println("Choose the question ids: ");
+            long questionId = inI.nextLong();
+            teacherService.addQToTest(qMap.get(questionId), test);
+            System.out.println("Continue? press 1 and enter -1 to end: ");
+            if (inI.nextInt() == -1) {
+                return;
+            }
+        }
+
+    }
+
     private void handleAddDQ() {
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        System.out.println("Enter the title of the question: ");
+        String title = inS.nextLine();
+        System.out.println("Enter the question text: ");
+        String text = inS.nextLine();
+        DescriptiveQuestion dQ = teacherService.makeDQs(teacherId, courseId, title, text);
+        System.out.println("Enter the test id: ");
+        long testId = inI.nextLong();
+        Tests test = teacherService.loadTestById(testId);
+        teacherService.addQToTest(dQ, test);
     }
 
 
@@ -167,11 +211,11 @@ public class Menu {
         System.out.println("Enter the question text: ");
         String text = inS.nextLine();
         Map<Choice, Boolean> choiceList = handleMakeChoices();
-        System.out.println("Enter the answer: ");
-        int answer = inI.nextInt();
-        teacherService.makeMCQs(teacherId, courseId, title, text, choiceList, answer);
-
-
+        MultipleChoiceQuestion mCQ = teacherService.makeMCQs(teacherId, courseId, title, text, choiceList);
+        System.out.println("Enter the test id: ");
+        long testId = inI.nextLong();
+        Tests test = teacherService.loadTestById(testId);
+        teacherService.addQToTest(mCQ, test);
     }
 
     private Map<Choice, Boolean> handleMakeChoices() {
@@ -194,11 +238,8 @@ public class Menu {
                     2. no
                     """);
             int isAnswerI = Integer.parseInt(inS.nextLine());
-            boolean isAnswerB = false;
-            if (isAnswerI == 1) {
-                isAnswerB = true;
-            }
-            choiceList.put(teacherService.makeChoice(text),isAnswerB);
+            boolean isAnswerB = isAnswerI == 1;
+            choiceList.put(teacherService.makeChoice(text), isAnswerB);
             counter++;
         }
     }

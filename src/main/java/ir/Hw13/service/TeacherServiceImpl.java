@@ -94,7 +94,7 @@ public class TeacherServiceImpl implements BaseService {
         return choice;
     }
 
-    public void makeMCQs(long teacherId, long courseId, String title, String text, Map<Choice, Boolean> choiceList, int answer) {
+    public MultipleChoiceQuestion makeMCQs(long teacherId, long courseId, String title, String text, Map<Choice, Boolean> choiceList) {
         MultipleChoiceQuestion mcq = new MultipleChoiceQuestion();
         Teacher teacher = (Teacher) managerService.loadPersonById(teacherId);
         Course course = managerService.loadCourseById(courseId);
@@ -104,14 +104,38 @@ public class TeacherServiceImpl implements BaseService {
         mcq.setTitle(title);
         choiceList.forEach((k, v) -> {
             k.setQuestion(mcq);
-            mcq.getChoices().add(k);
-
             if (v){
                 mcq.setAnswer(k);
             }
         });
 
         teacherRepository.addMCQ(mcq);
+        return mcq;
+    }
 
+        public void addQToTest(Questions question, Tests test) {
+            TestQuestion testQuestion = new TestQuestion();
+            testQuestion.setQuestions(question);
+            testQuestion.setTests(test);
+            teacherRepository.addQToTest(testQuestion);
+        }
+
+    public Tests loadTestById(long id){
+        return teacherRepository.loadTestById(id);
+    }
+
+    public DescriptiveQuestion makeDQs(long teacherId, long courseId, String title, String text) {
+        DescriptiveQuestion dq = new DescriptiveQuestion();
+        Teacher teacher = (Teacher) managerService.loadPersonById(teacherId);
+        Course course = managerService.loadCourseById(courseId);
+        dq.setTeacher(teacher);
+        dq.setCourse(course);
+        dq.setText(text);
+        dq.setTitle(title);
+        return dq;
+    }
+
+    public List<Questions> loadCourseQBForTeacher(long teacherId, long courseId) {
+        return teacherRepository.loadCourseQBForTeacher(teacherId,courseId);
     }
 }
