@@ -106,6 +106,7 @@ public class Menu {
                     3. Add test to course
                     4. Edit test
                     5. Download test
+                    6. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -114,6 +115,9 @@ public class Menu {
                 case 3 -> handleAddTest();
                 case 4 -> handleEditTest();
                 case 5 -> handleDownloadTest();
+                case 6 -> {
+                    return;
+                }
             }
         }
     }
@@ -129,41 +133,52 @@ public class Menu {
     }
 
     private void handleEditTest() {
-        System.out.println("""
-                1.Add questions to test
-                """);
-        int choice = inI.nextInt();
-        switch (choice) {
-            case 1 -> handleAddQuestionToTest();
+        while (true) {
+            System.out.println("""
+                    1. Add questions to test
+                    2. Back
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> handleAddQuestionToTest();
+                case 2 -> {
+                    return;
+                }
+            }
         }
     }
 
     private void handleAddQuestionToTest() {
-        System.out.println("""
-                1. Choose from question bank
-                2. Add a new question
-                3. Back
-                """);
-        int choice = inI.nextInt();
-        switch (choice) {
-            case 1 -> handleAddFromQB();
-            case 2 -> {
-                System.out.println("""
-                        1. Multiple Choice Question
-                        2. Descriptive Question
-                        """);
-                int qType = inI.nextInt();
-                if (qType == 1) {
-                    handleAddMCQs();
-                } else if (qType == 2) {
-                    handleAddDQ();
-                } else {
-                    System.out.println("Invalid input.");
+        while (true) {
+            System.out.println("""
+                    1. Choose from question bank
+                    2. Add a new question
+                    3. Back
+                    """);
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> handleAddFromQB();
+                case 2 -> {
+                    System.out.println("""
+                            1. Multiple Choice Question
+                            2. Descriptive Question
+                            """);
+                    int qType = inI.nextInt();
+                    if (qType == 1) {
+                        handleAddMCQs();
+                    } else if (qType == 2) {
+                        handleAddDQ();
+                    } else {
+                        System.out.println("Invalid input.");
+                    }
                 }
+                case 3 -> {
+                    return;
+                }
+
             }
 
         }
-
     }
 
     private void handleAddFromQB() {

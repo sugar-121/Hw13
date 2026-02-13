@@ -9,11 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ExportService {
-    private final EntityManager entityManager;
     private final TeacherServiceImpl teacherService;
 
     public ExportService(EntityManager entityManager, TeacherServiceImpl teacherService) {
-        this.entityManager = entityManager;
         this.teacherService = teacherService;
     }
 
