@@ -28,4 +28,9 @@ public class Questions extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "questions")
     private Set<TestQuestion> testQuestions;
+
+
+    public String buildQuestionText() {
+        return null;
+    }
 }

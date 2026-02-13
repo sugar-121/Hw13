@@ -5,10 +5,7 @@ import ir.Hw13.dto.PersonSignUpDto;
 import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.dto.TestDto;
 import ir.Hw13.entity.*;
-import ir.Hw13.service.CourseService;
-import ir.Hw13.service.ManagerService;
-import ir.Hw13.service.StudentServiceImpl;
-import ir.Hw13.service.TeacherServiceImpl;
+import ir.Hw13.service.*;
 import ir.Hw13.util.ApplicationContext;
 
 import java.time.LocalDate;
@@ -22,12 +19,14 @@ public class Menu {
     private final TeacherServiceImpl teacherService;
     private final ManagerService managerService;
     private final CourseService courseService;
+    private final ExportService exportService;
 
     public Menu() {
         this.studentService = ApplicationContext.getInstance().getStudentService();
         this.teacherService = ApplicationContext.getInstance().getTeacherService();
         this.managerService = ApplicationContext.getInstance().getManagerService();
         this.courseService = ApplicationContext.getInstance().getCourseService();
+        this.exportService = ApplicationContext.getInstance().getExportService();
     }
 
     public void start() {
@@ -106,6 +105,7 @@ public class Menu {
                     2. Show the tests you created for a course
                     3. Add test to course
                     4. Edit test
+                    5. Download test
                     """);
             int choice = inI.nextInt();
             switch (choice) {
@@ -113,8 +113,19 @@ public class Menu {
                 case 2 -> handleTeacherTests();
                 case 3 -> handleAddTest();
                 case 4 -> handleEditTest();
+                case 5 -> handleDownloadTest();
             }
         }
+    }
+
+    private void handleDownloadTest() {
+        System.out.println("Enter your id: ");
+        long teacherId = inI.nextLong();
+        System.out.println("Enter the test id: ");
+        long testId = inI.nextLong();
+        String fileName = exportService.exportTest(teacherId, testId);
+        System.out.println(fileName);
+
     }
 
     private void handleEditTest() {
@@ -175,13 +186,14 @@ public class Menu {
         while (true) {
             System.out.println("Choose the question ids: ");
             long questionId = inI.nextLong();
-            teacherService.addQToTest(qMap.get(questionId), test);
+            System.out.println("Determine the score: ");
+            long score = inI.nextLong();
+            teacherService.addQToTest(qMap.get(questionId), test, score);
             System.out.println("Continue? press 1 and enter -1 to end: ");
             if (inI.nextInt() == -1) {
                 return;
             }
         }
-
     }
 
     private void handleAddDQ() {
@@ -197,7 +209,9 @@ public class Menu {
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
         Tests test = teacherService.loadTestById(testId);
-        teacherService.addQToTest(dQ, test);
+        System.out.println("Determine the score: ");
+        long score = inI.nextLong();
+        teacherService.addQToTest(dQ, test, score);
     }
 
 
@@ -215,7 +229,9 @@ public class Menu {
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
         Tests test = teacherService.loadTestById(testId);
-        teacherService.addQToTest(mCQ, test);
+        System.out.println("Determine the score: ");
+        long score = inI.nextLong();
+        teacherService.addQToTest(mCQ, test, score);
     }
 
     private Map<Choice, Boolean> handleMakeChoices() {
@@ -268,7 +284,7 @@ public class Menu {
         long courseId = inI.nextLong();
         System.out.println("Enter your id: ");
         long teacherId = inI.nextLong();
-        teacherService.showTeacherTests(teacherId, courseId);
+        teacherService.showTeacherCourseTests(teacherId, courseId);
     }
 
     private void handleShowCourseTests() {

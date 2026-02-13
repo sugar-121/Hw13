@@ -5,10 +5,7 @@ import ir.Hw13.repository.CourseRepository;
 import ir.Hw13.repository.ManagerRepository;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.repository.TeacherRepositoryImpl;
-import ir.Hw13.service.CourseService;
-import ir.Hw13.service.ManagerService;
-import ir.Hw13.service.StudentServiceImpl;
-import ir.Hw13.service.TeacherServiceImpl;
+import ir.Hw13.service.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -43,6 +40,8 @@ public class ApplicationContext {
 
     private PersonMapper personMapper;
     private CourseMapper courseMapper;
+
+    private ExportService exportService;
 
     private ApplicationContext(){}
 
@@ -164,5 +163,12 @@ public class ApplicationContext {
             testMapper = new TestMapper();
         }
         return testMapper;
+    }
+
+    public ExportService getExportService(){
+        if (Objects.isNull(exportService)){
+            exportService = new ExportService(getEntityManager(),getTeacherService());
+        }
+        return exportService;
     }
 }

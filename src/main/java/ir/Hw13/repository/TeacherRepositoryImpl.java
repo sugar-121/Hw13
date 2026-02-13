@@ -34,10 +34,10 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
         return query.getResultList();
     }
 
-    public List<Tests> fetchTeacherTests(long teacherId, long courseId) {
+    public List<Tests> fetchTeacherCourseTests(long teacherId, long courseId) {
         TypedQuery<Tests> query = entityManager.createQuery("select t from Tests t where teacher.id = : teacherId and course.id = : courseId", Tests.class);
-        query.setParameter("teacherId" , teacherId);
-        query.setParameter("courseId" , courseId);
+        query.setParameter("teacherId", teacherId);
+        query.setParameter("courseId", courseId);
         return query.getResultList();
     }
 
@@ -61,7 +61,7 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
     }
 
     public Tests loadTestById(long id) {
-        return entityManager.find(Tests.class,id);
+        return entityManager.find(Tests.class, id);
     }
 
     public void addQToTest(TestQuestion testQuestion) {
@@ -75,5 +75,12 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
         query.setParameter("teacherId", teacherId);
         query.setParameter("courseId", courseId);
         return query.getResultList();
+    }
+
+    public Tests loadTeacherTest(long teacherId, long testId) {
+        TypedQuery<Tests> query = entityManager.createQuery("select t from Tests t where t.id = : testId and t.teacher.id = :teacherId", Tests.class);
+        query.setParameter("teacherId", teacherId);
+        query.setParameter("testId", testId);
+        return query.getSingleResultOrNull();
     }
 }

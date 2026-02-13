@@ -18,4 +18,24 @@ public class MultipleChoiceQuestion extends Questions{
     @ManyToOne
     private Choice answer;
 
+
+    @Override
+    public String buildQuestionText() {
+        int count = 1;
+        StringBuilder builder = new StringBuilder();
+
+
+        builder.append("Question: ")
+                .append(getText())
+                .append("\n");
+
+        for (Choice choice : getChoices()) {
+            builder.append(count)
+                    .append(")")
+                    .append(choice.getText())
+                    .append("\n");
+            count++;
+        }
+           return builder.toString();
+    }
 }

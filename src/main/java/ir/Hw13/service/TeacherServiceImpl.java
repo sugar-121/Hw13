@@ -75,8 +75,8 @@ public class TeacherServiceImpl implements BaseService {
         }
     }
 
-    public void showTeacherTests(long teacherId, long courseId) {
-        List<Tests> fetchedTeacherTests = teacherRepository.fetchTeacherTests(teacherId, courseId);
+    public void showTeacherCourseTests(long teacherId, long courseId) {
+        List<Tests> fetchedTeacherTests = teacherRepository.fetchTeacherCourseTests(teacherId, courseId);
         for (Tests test : fetchedTeacherTests) {
             testMapper.loadTest(test);
         }
@@ -113,10 +113,11 @@ public class TeacherServiceImpl implements BaseService {
         return mcq;
     }
 
-        public void addQToTest(Questions question, Tests test) {
+        public void addQToTest(Questions question, Tests test, long score) {
             TestQuestion testQuestion = new TestQuestion();
             testQuestion.setQuestions(question);
             testQuestion.setTests(test);
+            testQuestion.setScore(score);
             teacherRepository.addQToTest(testQuestion);
         }
 
@@ -137,5 +138,9 @@ public class TeacherServiceImpl implements BaseService {
 
     public List<Questions> loadCourseQBForTeacher(long teacherId, long courseId) {
         return teacherRepository.loadCourseQBForTeacher(teacherId,courseId);
+    }
+
+    public Tests loadTeacherTest(long teacherId, long testId){
+        return teacherRepository.loadTeacherTest(teacherId,testId);
     }
 }
