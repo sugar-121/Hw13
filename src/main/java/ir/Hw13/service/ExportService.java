@@ -11,7 +11,7 @@ import java.io.IOException;
 public class ExportService {
     private final TeacherServiceImpl teacherService;
 
-    public ExportService(EntityManager entityManager, TeacherServiceImpl teacherService) {
+    public ExportService(TeacherServiceImpl teacherService) {
         this.teacherService = teacherService;
     }
 

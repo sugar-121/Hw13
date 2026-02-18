@@ -15,8 +15,11 @@ public class TestMapper {
         System.out.println("Title: " + test.getTitle());
         System.out.println("Description: " + test.getDescription());
         System.out.println("Teacher: " + test.getTeacher().getFirstName() + " " + test.getTeacher().getLastName());
-        for (TestQuestion question : test.getTestQuestions()) {
-            totalScore += question.getScore();
+        System.out.println("Date: " + test.getDateTime().toString());
+        if (test.getTestQuestions() != null) {
+            for (TestQuestion question : test.getTestQuestions()) {
+                totalScore += question.getScore();
+            }
         }
         System.out.println("Score: " + totalScore);
     }

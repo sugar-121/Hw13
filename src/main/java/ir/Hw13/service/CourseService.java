@@ -23,9 +23,24 @@ public class CourseService {
     }
 
 
-    public void showCourseTests(long courseId) {
-        Course course = courseRepository.fetchCourseById(courseId);
-        for (Tests test : course.getTests()) {
+//    public void showCourseTests(long courseId) {
+//        Course course = courseRepository.fetchCourseById(courseId);
+//        for (Tests test : course.getTests()) {
+//            testMapper.loadTest(test);
+//        }
+//    }
+
+
+    public void loadCourseTests(long courseId) {
+        List<Tests> tests = courseRepository.loadCourseTests(courseId);
+        for (Tests test : tests) {
+            testMapper.loadTest(test);
+        }
+    }
+
+    public void loadCourseTestsForStudent(long studentId, long courseId) {
+        List<Tests> tests = courseRepository.loadCourseTestsForStudent(studentId, courseId);
+        for (Tests test : tests) {
             testMapper.loadTest(test);
         }
     }

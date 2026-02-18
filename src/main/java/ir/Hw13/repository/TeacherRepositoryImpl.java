@@ -42,12 +42,6 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
     }
 
 
-    public void AddTest(Tests test) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(test);
-        entityManager.getTransaction().commit();
-    }
-
     public void addMCQ(MultipleChoiceQuestion mcq) {
         entityManager.getTransaction().begin();
         entityManager.persist(mcq);

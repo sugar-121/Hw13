@@ -19,6 +19,7 @@ public class Menu {
     private final TeacherServiceImpl teacherService;
     private final ManagerService managerService;
     private final CourseService courseService;
+    private final TestService testService;
     private final ExportService exportService;
 
     public Menu() {
@@ -26,6 +27,7 @@ public class Menu {
         this.teacherService = ApplicationContext.getInstance().getTeacherService();
         this.managerService = ApplicationContext.getInstance().getManagerService();
         this.courseService = ApplicationContext.getInstance().getCourseService();
+        this.testService = ApplicationContext.getInstance().getTestService();
         this.exportService = ApplicationContext.getInstance().getExportService();
     }
 
@@ -87,12 +89,51 @@ public class Menu {
                     System.out.println("Wrong input!");
                 }
             }
-            case STUDENT -> System.out.println("student");
+            case STUDENT -> {
+                if (studentService.logIn(id, password)) {
+                    showStudentMenu(id);
+                } else {
+                    System.out.println("Wrong input!");
+                }
+            }
             case null -> System.out.println("wrong input");
         }
+    }
 
+    private void showStudentMenu(long studentId) {
+        while (true) {
+            System.out.println("""
+                    1. Show all of my course
+                    2. Show the tests of a course
+                    3. Take a test
+                    """);
+
+            int choice = inI.nextInt();
+            switch (choice) {
+                case 1 -> handleShowStudentCourses(studentId);
+                case 2 -> handleShowTestsOfCourse(studentId);
+                case 3 -> handleTakeTest(studentId);
+            }
+
+        }
+    }
+
+    private void handleTakeTest(long studentId) {
+        System.out.println("Enter the test id: ");
 
     }
+
+    private void handleShowTestsOfCourse(long studentId) {
+        System.out.println("Enter the course id: ");
+        long courseId = inI.nextLong();
+        courseService.loadCourseTestsForStudent(studentId, courseId);
+    }
+
+    private void handleShowStudentCourses(long studentId) {
+        System.out.println("Your courses: ");
+        studentService.showStudentCourses(studentId);
+    }
+
 
     private void showTeacherMenu() {
         System.out.println("hello teacher...");
@@ -291,7 +332,7 @@ public class Menu {
         Person person = managerService.loadPersonById(teacherId);
         Course course = managerService.loadCourseById(courseId);
         TestDto dto = new TestDto(title, description, date, (Teacher) person, course);
-        teacherService.AddTest(dto);
+        testService.AddTest(dto);
     }
 
     private void handleTeacherTests() {
@@ -305,7 +346,7 @@ public class Menu {
     private void handleShowCourseTests() {
         System.out.println("Enter the course id: ");
         long courseId = inI.nextLong();
-        courseService.showCourseTests(courseId);
+        courseService.loadCourseTests(courseId);
     }
 
     private void showManagerMenu() {
@@ -585,3 +626,4 @@ public class Menu {
         }
     }
 }
+

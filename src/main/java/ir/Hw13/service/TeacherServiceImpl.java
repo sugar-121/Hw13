@@ -82,10 +82,6 @@ public class TeacherServiceImpl implements BaseService {
         }
     }
 
-    public void AddTest(TestDto dto) {
-        teacherRepository.AddTest(testMapper.toEntity(dto));
-
-    }
 
     public Choice makeChoice(String text) {
         Choice choice = new Choice();

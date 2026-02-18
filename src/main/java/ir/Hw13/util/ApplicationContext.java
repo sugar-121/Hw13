@@ -1,10 +1,7 @@
 package ir.Hw13.util;
 
 import ir.Hw13.dto.mapper.*;
-import ir.Hw13.repository.CourseRepository;
-import ir.Hw13.repository.ManagerRepository;
-import ir.Hw13.repository.StudentRepositoryImpl;
-import ir.Hw13.repository.TeacherRepositoryImpl;
+import ir.Hw13.repository.*;
 import ir.Hw13.service.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -34,7 +31,6 @@ public class ApplicationContext {
     private CourseService courseService;
     private CourseRepository courseRepository;
 
-    private TestMapper testMapper;
 
     private Validator validator;
 
@@ -42,6 +38,10 @@ public class ApplicationContext {
     private CourseMapper courseMapper;
 
     private ExportService exportService;
+
+    private TestService testService;
+    private TestRepository testRepository;
+    private TestMapper testMapper;
 
     private ApplicationContext(){}
 
@@ -158,17 +158,31 @@ public class ApplicationContext {
         return courseRepository;
     }
 
+    public ExportService getExportService(){
+        if (Objects.isNull(exportService)){
+            exportService = new ExportService(getTeacherService());
+        }
+        return exportService;
+    }
+
+    public TestRepository getTestRepository(){
+        if (Objects.isNull(testRepository)){
+            testRepository = new TestRepository(getEntityManager());
+        }
+        return testRepository;
+    }
+
+    public TestService getTestService(){
+        if (Objects.isNull(testService)){
+            testService = new TestService(getTestRepository(), getTestMapper());
+        }
+        return testService;
+    }
+
     public TestMapper getTestMapper() {
         if (Objects.isNull(testMapper)){
             testMapper = new TestMapper();
         }
         return testMapper;
-    }
-
-    public ExportService getExportService(){
-        if (Objects.isNull(exportService)){
-            exportService = new ExportService(getEntityManager(),getTeacherService());
-        }
-        return exportService;
     }
 }
