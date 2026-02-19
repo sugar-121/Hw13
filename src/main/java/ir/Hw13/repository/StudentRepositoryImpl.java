@@ -2,6 +2,7 @@ package ir.Hw13.repository;
 
 import ir.Hw13.entity.Course;
 import ir.Hw13.entity.Student;
+import ir.Hw13.entity.StudentTakeTestAttempt;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -35,4 +36,10 @@ public class StudentRepositoryImpl implements BaseRepository<Student> {
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }
+
+    public Student loadStudentById(long studentId) {
+        return entityManager.find(Student.class,studentId);
+    }
+
+
 }

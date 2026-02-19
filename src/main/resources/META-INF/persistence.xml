@@ -17,6 +17,8 @@
     <class>ir.Hw13.entity.MultipleChoiceQuestion</class>
     <class>ir.Hw13.entity.DescriptiveQuestion</class>
     <class>ir.Hw13.entity.TestQuestion</class>
+    <class>ir.Hw13.entity.StudentTakeTestAttempt</class>
+    <class>ir.Hw13.entity.StudentAnswer</class>
 
 
     <properties>

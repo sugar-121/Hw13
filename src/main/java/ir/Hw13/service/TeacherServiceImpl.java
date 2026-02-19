@@ -117,9 +117,6 @@ public class TeacherServiceImpl implements BaseService {
             teacherRepository.addQToTest(testQuestion);
         }
 
-    public Tests loadTestById(long id){
-        return teacherRepository.loadTestById(id);
-    }
 
     public DescriptiveQuestion makeDQs(long teacherId, long courseId, String title, String text) {
         DescriptiveQuestion dq = new DescriptiveQuestion();

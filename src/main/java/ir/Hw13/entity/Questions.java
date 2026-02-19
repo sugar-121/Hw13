@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
@@ -28,6 +29,9 @@ public class Questions extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "questions")
     private Set<TestQuestion> testQuestions;
+
+    @OneToMany(mappedBy = "question")
+    private Set<StudentAnswer> studentAnswers = new HashSet<>();
 
 
     public String buildQuestionText() {

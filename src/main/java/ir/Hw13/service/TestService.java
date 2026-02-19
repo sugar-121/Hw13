@@ -2,6 +2,7 @@ package ir.Hw13.service;
 
 import ir.Hw13.dto.TestDto;
 import ir.Hw13.dto.mapper.TestMapper;
+import ir.Hw13.entity.Tests;
 import ir.Hw13.repository.TestRepository;
 
 public class TestService {
@@ -17,6 +18,10 @@ public class TestService {
     public void AddTest(TestDto dto) {
         testRepository.AddTest(testMapper.toEntity(dto));
 
+    }
+
+    public Tests loadTestById(long id){
+        return testRepository.loadTestById(id);
     }
 
 }

@@ -120,6 +120,9 @@ public class Menu {
 
     private void handleTakeTest(long studentId) {
         System.out.println("Enter the test id: ");
+        long testId = inI.nextLong();
+        studentService.takeTest(studentId, testId);
+
 
     }
 
@@ -229,7 +232,7 @@ public class Menu {
         long courseId = inI.nextLong();
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
-        Tests test = teacherService.loadTestById(testId);
+        Tests test = testService.loadTestById(testId);
 
         List<Questions> qbForTeacher = teacherService.loadCourseQBForTeacher(teacherId, courseId);
         Map<Long, Questions> qMap = qbForTeacher.stream().collect(Collectors.toMap(BaseEntity::getId, questions -> questions));
@@ -264,7 +267,7 @@ public class Menu {
         DescriptiveQuestion dQ = teacherService.makeDQs(teacherId, courseId, title, text);
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
-        Tests test = teacherService.loadTestById(testId);
+        Tests test = testService.loadTestById(testId);
         System.out.println("Determine the score: ");
         long score = inI.nextLong();
         teacherService.addQToTest(dQ, test, score);
@@ -284,7 +287,7 @@ public class Menu {
         MultipleChoiceQuestion mCQ = teacherService.makeMCQs(teacherId, courseId, title, text, choiceList);
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
-        Tests test = teacherService.loadTestById(testId);
+        Tests test = testService.loadTestById(testId);
         System.out.println("Determine the score: ");
         long score = inI.nextLong();
         teacherService.addQToTest(mCQ, test, score);
