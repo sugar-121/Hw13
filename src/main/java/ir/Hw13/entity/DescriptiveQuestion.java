@@ -9,6 +9,6 @@ public class DescriptiveQuestion extends Questions {
     @Override
     public String buildQuestionText() {
 
-        return "Question: " + getText() + "\n";
+        return "Question id " + getId() + ": " + getText() + "\n";
     }
 }

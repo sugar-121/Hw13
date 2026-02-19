@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
@@ -41,4 +42,17 @@ public class Tests extends BaseEntity<Long> {
             , fetch = LAZY)
     private Set<StudentTakeTestAttempt> studentTakeTestAttempts;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tests test = (Tests) o;
+        return Objects.equals(getId(), test.getId()) && Objects.equals(title, test.title) && Objects.equals(description, test.description) && Objects.equals(dateTime, test.dateTime) && Objects.equals(teacher, test.teacher) && Objects.equals(course, test.course) && Objects.equals(testQuestions, test.testQuestions) && Objects.equals(studentTakeTestAttempts, test.studentTakeTestAttempts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description, dateTime, teacher, course, testQuestions, studentTakeTestAttempts);
+    }
 }

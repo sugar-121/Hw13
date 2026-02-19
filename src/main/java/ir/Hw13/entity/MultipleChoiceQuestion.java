@@ -25,7 +25,9 @@ public class MultipleChoiceQuestion extends Questions{
         StringBuilder builder = new StringBuilder();
 
 
-        builder.append("Question: ")
+        builder.append("Question id ")
+                .append(getId())
+                .append(": ")
                 .append(getText())
                 .append("\n");
 

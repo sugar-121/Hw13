@@ -15,10 +15,7 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"student_id", "test_id"})
-        })
+@Table(name = "take_test_attempt")
 @Getter
 @Setter
 @NoArgsConstructor

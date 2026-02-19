@@ -121,7 +121,11 @@ public class Menu {
     private void handleTakeTest(long studentId) {
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
-        studentService.takeTest(studentId, testId);
+        try {
+            studentService.takeTest(studentId, testId);
+        }catch (RuntimeException e){
+            System.out.println(e.getMessage());
+        }
 
 
     }

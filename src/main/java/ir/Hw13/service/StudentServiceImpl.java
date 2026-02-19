@@ -70,7 +70,7 @@ public class StudentServiceImpl implements BaseService {
                 if (attempt.getStatus() == TakingStatus.FINISHED){
                     throw new AlreadyTaken();
                 }else if (attempt.getStatus() == TakingStatus.IN_PROGRESS){
-                    testRepository.takeTest(attempt);
+                    testService.showTestQuestions(test);
                 }
             }
         }
