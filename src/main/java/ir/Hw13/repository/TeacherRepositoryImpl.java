@@ -77,4 +77,8 @@ public class TeacherRepositoryImpl implements BaseRepository<Teacher> {
         query.setParameter("testId", testId);
         return query.getSingleResultOrNull();
     }
+
+    public StudentTakeTestAttempt loadAttemptById(long attemptId) {
+        return entityManager.find(StudentTakeTestAttempt.class, attemptId);
+    }
 }

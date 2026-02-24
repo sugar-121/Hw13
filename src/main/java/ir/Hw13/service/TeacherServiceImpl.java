@@ -136,4 +136,8 @@ public class TeacherServiceImpl implements BaseService {
     public Tests loadTeacherTest(long teacherId, long testId){
         return teacherRepository.loadTeacherTest(teacherId,testId);
     }
+
+    public StudentTakeTestAttempt loadAttemptById(long attemptId){
+        return teacherRepository.loadAttemptById(attemptId);
+    }
 }

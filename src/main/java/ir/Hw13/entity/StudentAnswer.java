@@ -1,6 +1,8 @@
 package ir.Hw13.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -9,19 +11,18 @@ import static jakarta.persistence.FetchType.LAZY;
 
 
 @Entity
+@Getter
+@Setter
 public class StudentAnswer extends BaseEntity<Long> {
 
 
-    @ManyToOne(cascade = ALL
-            , fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     private Questions question;
 
-    @ManyToOne(cascade = ALL
-            , fetch = LAZY)
+    @ManyToOne (fetch = LAZY)
     private StudentTakeTestAttempt attempt;
 
-    @ManyToOne(cascade = ALL
-            , fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     private Choice answeredChoice;
 
     @Column

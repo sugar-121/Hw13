@@ -21,7 +21,7 @@ public class MultipleChoiceQuestion extends Questions{
 
     @Override
     public String buildQuestionText() {
-        int count = 1;
+       // int count = 1;
         StringBuilder builder = new StringBuilder();
 
 
@@ -32,11 +32,12 @@ public class MultipleChoiceQuestion extends Questions{
                 .append("\n");
 
         for (Choice choice : getChoices()) {
-            builder.append(count)
+          //  builder.append(count)
+            builder.append(choice.getId())
                     .append(")")
                     .append(choice.getText())
                     .append("\n");
-            count++;
+            //count++;
         }
            return builder.toString();
     }

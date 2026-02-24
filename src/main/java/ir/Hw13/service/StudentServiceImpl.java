@@ -7,6 +7,7 @@ import ir.Hw13.entity.*;
 import ir.Hw13.repository.StudentRepositoryImpl;
 import ir.Hw13.repository.TestRepository;
 import ir.Hw13.service.exceptions.AlreadyTaken;
+import ir.Hw13.service.exceptions.TimeIsUp;
 import ir.Hw13.util.ApplicationContext;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -36,8 +37,8 @@ public class StudentServiceImpl implements BaseService {
     @Override
     public boolean signUp(PersonSignUpDto dto) {
         Set<ConstraintViolation<PersonSignUpDto>> violations = validator.validate(dto);
-        if (!violations.isEmpty()){
-            violations.forEach(v-> System.out.println(v.getMessage()));
+        if (!violations.isEmpty()) {
+            violations.forEach(v -> System.out.println(v.getMessage()));
             return false;
         }
         Student student = studentMapper.toEntityS(dto);
@@ -56,21 +57,25 @@ public class StudentServiceImpl implements BaseService {
         }
     }
 
-    public Student loadStudentById(long studentId){
+    public Student loadStudentById(long studentId) {
         return studentRepository.loadStudentById(studentId);
     }
 
-    public void takeTest(long studentId, long testId) {
+    public StudentTakeTestAttempt takeTest(long studentId, Tests test) {
         Student student = loadStudentById(studentId);
-        Tests test = testService.loadTestById(testId);
+
 
         Set<StudentTakeTestAttempt> studentTakeTestAttempts = student.getStudentTakeTestAttempts();
         for (StudentTakeTestAttempt attempt : studentTakeTestAttempts) {
-            if (attempt.getTest().equals(test)){
-                if (attempt.getStatus() == TakingStatus.FINISHED){
+            if (attempt.getTest().equals(test)) {
+                if (attempt.getStatus() == TakingStatus.FINISHED) {
                     throw new AlreadyTaken();
-                }else if (attempt.getStatus() == TakingStatus.IN_PROGRESS){
-                    testService.showTestQuestions(test);
+                } else if (attempt.getStatus() == TakingStatus.IN_PROGRESS) {
+                    if (testService.getRemainingTime(attempt).isPositive()){
+                        return attempt;
+                    }else {
+                        throw new TimeIsUp();
+                    }
                 }
             }
         }
@@ -79,8 +84,9 @@ public class StudentServiceImpl implements BaseService {
         attempt.setTest(test);
         attempt.setStartTime(LocalDateTime.now());
         attempt.setStatus(TakingStatus.IN_PROGRESS);
+        student.getStudentTakeTestAttempts().add(attempt);
 
         testRepository.takeTest(attempt);
-
+        return attempt;
     }
 }

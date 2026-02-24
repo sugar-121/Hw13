@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
@@ -41,6 +42,9 @@ public class Tests extends BaseEntity<Long> {
             , cascade = ALL
             , fetch = LAZY)
     private Set<StudentTakeTestAttempt> studentTakeTestAttempts;
+
+    @Column
+    private Integer duration;
 
 
     @Override

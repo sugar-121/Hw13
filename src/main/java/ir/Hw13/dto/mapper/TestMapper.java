@@ -31,6 +31,7 @@ public class TestMapper {
         test.setDateTime(dto.getDate());
         test.setTeacher(dto.getTeacher());
         test.setCourse(dto.getCourse());
+        test.setDuration((dto.getDuration()));
         return test;
     }
 }

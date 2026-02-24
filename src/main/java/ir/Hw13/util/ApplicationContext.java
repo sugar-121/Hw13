@@ -174,7 +174,7 @@ public class ApplicationContext {
 
     public TestService getTestService(){
         if (Objects.isNull(testService)){
-            testService = new TestService(getTestRepository(), getTestMapper());
+            testService = new TestService(getTestRepository(), getTestMapper(),getTeacherService());
         }
         return testService;
     }

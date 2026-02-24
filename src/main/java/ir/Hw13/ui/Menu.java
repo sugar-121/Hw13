@@ -6,8 +6,10 @@ import ir.Hw13.dto.PersonUpdateDto;
 import ir.Hw13.dto.TestDto;
 import ir.Hw13.entity.*;
 import ir.Hw13.service.*;
+import ir.Hw13.service.exceptions.TimeIsUp;
 import ir.Hw13.util.ApplicationContext;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,15 +121,60 @@ public class Menu {
     }
 
     private void handleTakeTest(long studentId) {
+        StudentTakeTestAttempt attempt = null;
+        Tests test = null;
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
+        test = testService.loadTestById(testId);
+        int numberOfQs = test.getTestQuestions().size();
+        int count = 0;
         try {
-            studentService.takeTest(studentId, testId);
-        }catch (RuntimeException e){
+            attempt = studentService.takeTest(studentId, test);
+
+        } catch (RuntimeException e) {
             System.out.println(e.getMessage());
+            return;
         }
 
+        assert attempt != null;
+        while (true) {
+            Duration remainingTime = testService.getRemainingTime(attempt);
+            if (remainingTime.isZero()) {
+                System.out.println("Time is up!!");
+                testService.finishTest(attempt);
+                return;
+            }
+            count++;
+            System.out.println("Time remaining: " + remainingTime.getSeconds() / 60+":"+(remainingTime.getSeconds())%60);
 
+            System.out.println(testService.showTestQuestions(attempt, test));
+
+            System.out.println("Enter the id of the question you wanna answer: ");
+            long questionId = inI.nextLong();
+            Questions question = testService.loadQuestionById(questionId);
+            int correctChoice = -1;
+            String answerText = "";
+            if (question instanceof MultipleChoiceQuestion) {
+                System.out.println("Enter the correct choice: ");
+                correctChoice = inI.nextInt();
+            } else if (question instanceof DescriptiveQuestion) {
+                System.out.println("Enter your answer: ");
+                answerText = inS.nextLine();
+            }
+            try {
+                testService.insertAnswerToTest(attempt, questionId, correctChoice, answerText);
+            } catch (TimeIsUp timeIsUp) {
+                System.out.println(timeIsUp.getMessage());
+                testService.finishTest(attempt);
+            }
+            if (count >= numberOfQs) {
+                System.out.println("Enter 0 to finish and 1 to continue: ");
+                if (inI.nextInt() == 0) {
+                    testService.finishTest(attempt);
+                    return;
+                }
+            }
+        }
     }
 
     private void handleShowTestsOfCourse(long studentId) {
@@ -336,9 +383,11 @@ public class Menu {
         System.out.println("Enter the date(yyyy-mm-dd): ");
         String inputDate = inS.nextLine();
         LocalDate date = LocalDate.parse(inputDate);
+        System.out.println("Enter the duration: ");
+        Integer duration = inI.nextInt();
         Person person = managerService.loadPersonById(teacherId);
         Course course = managerService.loadCourseById(courseId);
-        TestDto dto = new TestDto(title, description, date, (Teacher) person, course);
+        TestDto dto = new TestDto(title, description, date, (Teacher) person, course, duration);
         testService.AddTest(dto);
     }
 

@@ -7,6 +7,7 @@ import ir.Hw13.util.ApplicationContext;
 import jakarta.persistence.EntityManager;
 
 import javax.swing.text.html.parser.Entity;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -21,7 +22,6 @@ public class Main {
 //        System.out.println(person.getClass().getSimpleName());
 ////        entityManager.getTransaction().commit();
 //        //manager: id=1   password=121
-
         Menu menu = new Menu();
         menu.start();
     }

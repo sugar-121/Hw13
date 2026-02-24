@@ -1,7 +1,6 @@
 package ir.Hw13.repository;
 
-import ir.Hw13.entity.StudentTakeTestAttempt;
-import ir.Hw13.entity.Tests;
+import ir.Hw13.entity.*;
 import jakarta.persistence.EntityManager;
 
 public class TestRepository {
@@ -20,12 +19,32 @@ public class TestRepository {
     }
 
     public Tests loadTestById(long testId) {
-        return entityManager.find(Tests.class,testId);
+        return entityManager.find(Tests.class, testId);
     }
 
     public void takeTest(StudentTakeTestAttempt attempt) {
         entityManager.getTransaction().begin();
         entityManager.persist(attempt);
+        entityManager.getTransaction().commit();
+    }
+
+    public Questions loadQuestionById(long questionId) {
+        return entityManager.find(Questions.class, questionId);
+    }
+
+    public Choice loadChoiceById(long choiceId) {
+        return entityManager.find(Choice.class, choiceId);
+    }
+
+    public void insertAnswerToTest(StudentAnswer answer) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(answer);
+        entityManager.getTransaction().commit();
+    }
+
+    public void finishTest(StudentTakeTestAttempt attempt) {
+        entityManager.getTransaction().begin();
+        entityManager.merge(attempt);
         entityManager.getTransaction().commit();
     }
 }
