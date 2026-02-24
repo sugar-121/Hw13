@@ -17,12 +17,10 @@ public class TestService {
 
     private TestRepository testRepository;
     private TestMapper testMapper;
-    private TeacherServiceImpl teacherService;
 
-    public TestService(TestRepository testRepository, TestMapper testMapper, TeacherServiceImpl teacherService) {
+    public TestService(TestRepository testRepository, TestMapper testMapper) {
         this.testRepository = testRepository;
         this.testMapper = testMapper;
-        this.teacherService = teacherService;
     }
 
     public void AddTest(TestDto dto) {
@@ -96,22 +94,44 @@ public class TestService {
     public void finishTest(StudentTakeTestAttempt attempt) {
         attempt.setStatus(TakingStatus.FINISHED);
         attempt.setEndTime(LocalDateTime.now());
+
+        autoGradeMCQs(attempt);
         testRepository.finishTest(attempt);
+    }
+
+    public void autoGradeMCQs(StudentTakeTestAttempt attempt) {
+        List<StudentAnswer> studentAnswers = testRepository.loadStudentAnswers(attempt);
+        for (StudentAnswer studentAnswer : studentAnswers) {
+            if (studentAnswer.getQuestion() instanceof MultipleChoiceQuestion mcq) {
+                if (studentAnswer.getAnsweredChoice().equals(mcq.getAnswer())) {
+                    studentAnswer.setScore(getQuestionScoreInTest(attempt.getTest().getId()
+                            , studentAnswer.getQuestion().getId()));
+                } else {
+                    studentAnswer.setScore((double) 0);
+                }
+                studentAnswer.setGraded(true);
+                testRepository.autoGradeQuestion(studentAnswer);
+            }
+        }
     }
 
     public List<StudentTakeTestAttempt> loadFinishedTestAttempts(long testId) {
         List<StudentTakeTestAttempt> attempts = testRepository.loadTestAttempts(testId);
         List<StudentTakeTestAttempt> finishedAttempts = new ArrayList<>();
         for (StudentTakeTestAttempt attempt : attempts) {
-            if (attempt.getStatus().equals(TakingStatus.IN_PROGRESS)){
-                if (getRemainingTime(attempt).isZero()){
+            if (attempt.getStatus().equals(TakingStatus.IN_PROGRESS)) {
+                if (getRemainingTime(attempt).isZero()) {
                     finishTest(attempt);
                 }
             }
-            if (attempt.getStatus().equals(TakingStatus.FINISHED)){
+            if (attempt.getStatus().equals(TakingStatus.FINISHED)) {
                 finishedAttempts.add(attempt);
             }
         }
         return finishedAttempts;
+    }
+
+    public Double getQuestionScoreInTest(long testId, long questionId) {
+        return testRepository.getQuestionScoreInTest(testId, questionId);
     }
 }

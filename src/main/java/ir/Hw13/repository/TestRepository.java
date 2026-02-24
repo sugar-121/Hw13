@@ -56,4 +56,27 @@ public class TestRepository {
         query.setParameter("testId", testId);
         return query.getResultList();
     }
+
+    public List<StudentAnswer> loadStudentAnswers(StudentTakeTestAttempt attempt) {
+        TypedQuery<StudentAnswer> query = entityManager.createQuery("select a from StudentAnswer a where a.attempt.id =: attemptId", StudentAnswer.class);
+        query.setParameter("attemptId", attempt.getId());
+        return query.getResultList();
+
+    }
+
+    public Double getQuestionScoreInTest(long testId, long questionId) {
+        TypedQuery<Double> query = entityManager.createQuery("select t.score from TestQuestion t where t.tests.id =: testId and t.questions.id =: questionId", Double.class);
+        query.setParameter("testId" ,testId);
+        query.setParameter("questionId",questionId);
+        return query.getSingleResultOrNull();
+    }
+
+
+    public void autoGradeQuestion(StudentAnswer answer){
+        entityManager.getTransaction().begin();
+        entityManager.merge(answer);
+        entityManager.getTransaction().commit();
+    }
+
+
 }

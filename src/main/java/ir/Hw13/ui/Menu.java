@@ -196,7 +196,7 @@ public class Menu {
             System.out.println("""
                     1. Show all the tests of the course
                     2. Show the tests you created for a course
-                    3. Show the participants of a test
+                    3. Show the participants of a finished test
                     4. Add test to course
                     5. Edit test
                     6. Download test
@@ -206,7 +206,7 @@ public class Menu {
             switch (choice) {
                 case 1 -> handleShowCourseTests();
                 case 2 -> handleTeacherTests();
-                case 3 -> handleShowParticipantsOfTest(teacherId);
+                case 3 -> handleShowParticipantsOfFinishedTests(teacherId);
                 case 4 -> handleAddTest();
                 case 5 -> handleEditTest();
                 case 6 -> handleDownloadTest();
@@ -217,11 +217,25 @@ public class Menu {
         }
     }
 
-    private void handleShowParticipantsOfTest(long teacherId) {
+    private void handleShowParticipantsOfFinishedTests(long teacherId) {
         System.out.println("Enter the test id: ");
         long testId = inI.nextLong();
-        List<StudentTakeTestAttempt> attempts = teacherService.loadFinishedTestCreatedByTeacherAttempts(testId, teacherId);
+        Tests test = testService.loadTestById(testId);
 
+        System.out.println("Test title: " + test.getTitle());
+
+        List<StudentTakeTestAttempt> attempts = teacherService.loadFinishedTestCreatedByTeacherAttempts(testId, teacherId);
+        for (StudentTakeTestAttempt attempt : attempts) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Attempts id: ")
+                    .append(attempt.getId())
+                    .append("\n")
+                    .append("Student name: ")
+                    .append(attempt.getStudent().getFirstName())
+                    .append(" ")
+                    .append(attempt.getStudent().getLastName());
+            System.out.println(builder);
+        }
 
     }
 
