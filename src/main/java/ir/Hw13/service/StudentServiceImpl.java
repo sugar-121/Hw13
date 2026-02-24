@@ -74,6 +74,7 @@ public class StudentServiceImpl implements BaseService {
                     if (testService.getRemainingTime(attempt).isPositive()){
                         return attempt;
                     }else {
+                        testService.finishTest(attempt);
                         throw new TimeIsUp();
                     }
                 }

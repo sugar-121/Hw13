@@ -397,6 +397,7 @@ public class Menu {
         System.out.println("Enter your id: ");
         long teacherId = inI.nextLong();
         teacherService.showTeacherCourseTests(teacherId, courseId);
+
     }
 
     private void handleShowCourseTests() {

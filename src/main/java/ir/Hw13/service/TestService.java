@@ -93,6 +93,8 @@ public class TestService {
 
     public void finishTest(StudentTakeTestAttempt attempt) {
         attempt.setStatus(TakingStatus.FINISHED);
+        attempt.setEndTime(LocalDateTime.now());
+
         testRepository.finishTest(attempt);
     }
 }
