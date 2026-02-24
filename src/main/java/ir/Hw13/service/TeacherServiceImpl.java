@@ -1,13 +1,13 @@
 package ir.Hw13.service;
 
 import ir.Hw13.dto.PersonSignUpDto;
-import ir.Hw13.dto.TestDto;
 import ir.Hw13.dto.mapper.CourseMapper;
 import ir.Hw13.dto.mapper.TeacherMapper;
 import ir.Hw13.dto.mapper.TestMapper;
 import ir.Hw13.entity.*;
 import ir.Hw13.repository.ManagerRepository;
 import ir.Hw13.repository.TeacherRepositoryImpl;
+import ir.Hw13.service.exceptions.IllegalTestAccess;
 import ir.Hw13.util.ApplicationContext;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -27,6 +27,7 @@ public class TeacherServiceImpl implements BaseService {
     private final TestMapper testMapper;
     private final ManagerRepository managerRepository;
     private final ManagerService managerService;
+    private final TestService testService;
 
 
     public TeacherServiceImpl() {
@@ -39,16 +40,18 @@ public class TeacherServiceImpl implements BaseService {
         this.testMapper = ApplicationContext.getInstance().getTestMapper();
         this.managerRepository = ApplicationContext.getInstance().getManagerRepository();
         this.managerService = ApplicationContext.getInstance().getManagerService();
+        this.testService = ApplicationContext.getInstance().getTestService();
     }
 
-    public TeacherServiceImpl( TeacherRepositoryImpl teacherRepository, Validator validator){
+    public TeacherServiceImpl(TeacherRepositoryImpl teacherRepository, Validator validator, TestService testService) {
         this.teacherRepository = teacherRepository;
         this.validator = validator;
+        this.testService = testService;
 
         this.signUpTeacherMapper = ApplicationContext.getInstance().getTeacherMapper();
         this.courseMapper = ApplicationContext.getInstance().getCourseMapper();
         this.testMapper = ApplicationContext.getInstance().getTestMapper();
-       this.managerRepository = null;
+        this.managerRepository = null;
         this.managerService = null;
     }
 
@@ -100,7 +103,7 @@ public class TeacherServiceImpl implements BaseService {
         mcq.setTitle(title);
         choiceList.forEach((k, v) -> {
             k.setQuestion(mcq);
-            if (v){
+            if (v) {
                 mcq.setAnswer(k);
             }
         });
@@ -109,13 +112,13 @@ public class TeacherServiceImpl implements BaseService {
         return mcq;
     }
 
-        public void addQToTest(Questions question, Tests test, long score) {
-            TestQuestion testQuestion = new TestQuestion();
-            testQuestion.setQuestions(question);
-            testQuestion.setTests(test);
-            testQuestion.setScore(score);
-            teacherRepository.addQToTest(testQuestion);
-        }
+    public void addQToTest(Questions question, Tests test, long score) {
+        TestQuestion testQuestion = new TestQuestion();
+        testQuestion.setQuestions(question);
+        testQuestion.setTests(test);
+        testQuestion.setScore(score);
+        teacherRepository.addQToTest(testQuestion);
+    }
 
 
     public DescriptiveQuestion makeDQs(long teacherId, long courseId, String title, String text) {
@@ -130,14 +133,23 @@ public class TeacherServiceImpl implements BaseService {
     }
 
     public List<Questions> loadCourseQBForTeacher(long teacherId, long courseId) {
-        return teacherRepository.loadCourseQBForTeacher(teacherId,courseId);
+        return teacherRepository.loadCourseQBForTeacher(teacherId, courseId);
     }
 
-    public Tests loadTeacherTest(long teacherId, long testId){
-        return teacherRepository.loadTeacherTest(teacherId,testId);
+    public Tests loadTeacherTest(long teacherId, long testId) {
+        return teacherRepository.loadTeacherTest(teacherId, testId);
     }
 
-    public StudentTakeTestAttempt loadAttemptById(long attemptId){
+    public StudentTakeTestAttempt loadAttemptById(long attemptId) {
         return teacherRepository.loadAttemptById(attemptId);
+    }
+
+    public List<StudentTakeTestAttempt> loadFinishedTestCreatedByTeacherAttempts(long testId, long teacherId) {
+        Tests test = testService.loadTestById(testId);
+        if (test.getTeacher().getId().equals(teacherId)) {
+            return testService.loadFinishedTestAttempts(testId);
+        } else {
+            throw new IllegalTestAccess();
+        }
     }
 }

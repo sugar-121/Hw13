@@ -86,7 +86,7 @@ public class Menu {
             }
             case TEACHER -> {
                 if (teacherService.logIn(id, password)) {
-                    showTeacherMenu();
+                    showTeacherMenu(id);
                 } else {
                     System.out.println("Wrong input!");
                 }
@@ -145,7 +145,7 @@ public class Menu {
                 return;
             }
             count++;
-            System.out.println("Time remaining: " + remainingTime.getSeconds() / 60+":"+(remainingTime.getSeconds())%60);
+            System.out.println("Time remaining: " + remainingTime.getSeconds() / 60 + ":" + (remainingTime.getSeconds()) % 60);
 
             System.out.println(testService.showTestQuestions(attempt, test));
 
@@ -189,32 +189,40 @@ public class Menu {
     }
 
 
-    private void showTeacherMenu() {
+    private void showTeacherMenu(long teacherId) {
         System.out.println("hello teacher...");
-        System.out.println("Enter your id: ");
-        long teacherId = inI.nextLong();
         teacherService.showTeacherCourses(teacherId);
         while (true) {
             System.out.println("""
                     1. Show all the tests of the course
                     2. Show the tests you created for a course
-                    3. Add test to course
-                    4. Edit test
-                    5. Download test
-                    6. Back
+                    3. Show the participants of a test
+                    4. Add test to course
+                    5. Edit test
+                    6. Download test
+                    7. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> handleShowCourseTests();
                 case 2 -> handleTeacherTests();
-                case 3 -> handleAddTest();
-                case 4 -> handleEditTest();
-                case 5 -> handleDownloadTest();
-                case 6 -> {
+                case 3 -> handleShowParticipantsOfTest(teacherId);
+                case 4 -> handleAddTest();
+                case 5 -> handleEditTest();
+                case 6 -> handleDownloadTest();
+                case 7 -> {
                     return;
                 }
             }
         }
+    }
+
+    private void handleShowParticipantsOfTest(long teacherId) {
+        System.out.println("Enter the test id: ");
+        long testId = inI.nextLong();
+        List<StudentTakeTestAttempt> attempts = teacherService.loadFinishedTestCreatedByTeacherAttempts(testId, teacherId);
+
+
     }
 
     private void handleDownloadTest() {

@@ -2,6 +2,9 @@ package ir.Hw13.repository;
 
 import ir.Hw13.entity.*;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import java.util.List;
 
 public class TestRepository {
 
@@ -46,5 +49,11 @@ public class TestRepository {
         entityManager.getTransaction().begin();
         entityManager.merge(attempt);
         entityManager.getTransaction().commit();
+    }
+
+    public List<StudentTakeTestAttempt> loadTestAttempts(long testId) {
+        TypedQuery<StudentTakeTestAttempt> query = entityManager.createQuery("select a from StudentTakeTestAttempt a where a.test.id =: testId", StudentTakeTestAttempt.class);
+        query.setParameter("testId", testId);
+        return query.getResultList();
     }
 }

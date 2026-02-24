@@ -9,6 +9,8 @@ import ir.Hw13.service.exceptions.TimeIsUp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class TestService {
@@ -55,10 +57,10 @@ public class TestService {
         Questions question = loadQuestionById(questionId);
 
         Duration remainingTime = getRemainingTime(attempt);
-        if(remainingTime.isZero()){
+        if (remainingTime.isZero()) {
             attempt.setStatus(TakingStatus.FINISHED);
             throw new TimeIsUp();
-        }else {
+        } else {
             StudentAnswer answer = new StudentAnswer();
             answer.setAttempt(attempt);
             answer.setQuestion(question);
@@ -94,7 +96,22 @@ public class TestService {
     public void finishTest(StudentTakeTestAttempt attempt) {
         attempt.setStatus(TakingStatus.FINISHED);
         attempt.setEndTime(LocalDateTime.now());
-
         testRepository.finishTest(attempt);
+    }
+
+    public List<StudentTakeTestAttempt> loadFinishedTestAttempts(long testId) {
+        List<StudentTakeTestAttempt> attempts = testRepository.loadTestAttempts(testId);
+        List<StudentTakeTestAttempt> finishedAttempts = new ArrayList<>();
+        for (StudentTakeTestAttempt attempt : attempts) {
+            if (attempt.getStatus().equals(TakingStatus.IN_PROGRESS)){
+                if (getRemainingTime(attempt).isZero()){
+                    finishTest(attempt);
+                }
+            }
+            if (attempt.getStatus().equals(TakingStatus.FINISHED)){
+                finishedAttempts.add(attempt);
+            }
+        }
+        return finishedAttempts;
     }
 }
