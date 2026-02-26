@@ -27,16 +27,34 @@ import java.util.Objects;
 import java.util.Set;
 
 public class ManagerService {
-    private final ApplicationContext context = ApplicationContext.getInstance();
-    private final EntityManager entityManager = context.getEntityManager();
-    private final ManagerRepository managerRepository = context.getManagerRepository();
-    private final PersonMapper personMapper = context.getPersonMapper();
-    private final TeacherMapper teacherMapper = context.getTeacherMapper();
-    private final StudentMapper studentMapper = ApplicationContext.getInstance().getStudentMapper();
-    private final StudentRepositoryImpl studentRepository = context.getStudentRepository();
-    private final TeacherRepositoryImpl teacherRepository = context.getTeacherRepository();
-    private final Validator validator = context.getValidator();
-    private final CourseMapper courseMapper = context.getCourseMapper();
+    private final ManagerRepository managerRepository;
+    private final PersonMapper personMapper;
+    private final TeacherMapper teacherMapper;
+    private final StudentMapper studentMapper;
+    private final StudentRepositoryImpl studentRepository;
+    private final TeacherRepositoryImpl teacherRepository;
+    private final Validator validator;
+    private final CourseMapper courseMapper;
+
+    public ManagerService(ManagerRepository managerRepository
+            , PersonMapper personMapper
+            , TeacherMapper teacherMapper
+            , StudentMapper studentMapper
+            , StudentRepositoryImpl studentRepository
+            , TeacherRepositoryImpl teacherRepository
+            , Validator validator
+            , CourseMapper courseMapper) {
+        this.managerRepository = managerRepository;
+        this.personMapper = personMapper;
+        this.teacherMapper = teacherMapper;
+        this.studentMapper = studentMapper;
+        this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
+        this.validator = validator;
+        this.courseMapper = courseMapper;
+    }
+
+
 
     public boolean logIn(long id, String password) {
         return managerRepository.logIn(id, password);
@@ -64,7 +82,7 @@ public class ManagerService {
         return managerRepository.loadById(id);
     }
 
-    public Course loadCourseById(long id){
+    public Course loadCourseById(long id) {
         return managerRepository.loadCourseById(id);
     }
 
@@ -108,11 +126,6 @@ public class ManagerService {
         return true;
     }
 
-//    public Course fetchCourseByTitle(String title){
-//        return managerRepository.fetchCourseByTitle(title);
-//    }
-
-
 
     public boolean dropCourse(String title) {
         Course fetchedCourse = managerRepository.fetchCourseByTitle(title);
@@ -142,15 +155,6 @@ public class ManagerService {
             throw new PersonNotFoundException(id);
         }
         return 1;
-    }
-
-    public void show() {
-        Person teacher = managerRepository.loadById(4);
-        Set<Course> courses = ((Teacher) teacher).getCourses();
-        for (Course course : courses) {
-            System.out.println(course.getTeacher().getFirstName());
-        }
-
     }
 
     public int addStudentToCourse(String title, long id) {

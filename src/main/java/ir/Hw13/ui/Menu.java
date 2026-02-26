@@ -197,24 +197,32 @@ public class Menu {
                     1. Show all the tests of the course
                     2. Show the tests you created for a course
                     3. Show the participants of a finished test
-                    4. Add test to course
-                    5. Edit test
-                    6. Download test
-                    7. Back
+                    4. Show not graded tests
+                    5. Add test to course
+                    6. Edit test
+                    7. Download test
+                    8. Back
                     """);
             int choice = inI.nextInt();
             switch (choice) {
                 case 1 -> handleShowCourseTests();
                 case 2 -> handleTeacherTests();
                 case 3 -> handleShowParticipantsOfFinishedTests(teacherId);
-                case 4 -> handleAddTest();
-                case 5 -> handleEditTest();
-                case 6 -> handleDownloadTest();
-                case 7 -> {
+                case 4 -> handleShowNotGradedAttempt();
+                case 5 -> handleAddTest();
+                case 6 -> handleEditTest();
+                case 7 -> handleDownloadTest();
+                case 8 -> {
                     return;
                 }
             }
         }
+    }
+
+    private void handleShowNotGradedAttempt() {
+        System.out.println("Enter the attempt id: ");
+        long attemptId = inI.nextLong();
+      //  testService.loadNotGradedAttempt(attemptId);
     }
 
     private void handleShowParticipantsOfFinishedTests(long teacherId) {

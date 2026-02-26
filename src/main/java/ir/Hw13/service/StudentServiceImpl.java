@@ -50,6 +50,8 @@ public class StudentServiceImpl implements BaseService {
         return studentRepository.logIn(id, password);
     }
 
+
+
     public void showStudentCourses(long studentId) {
         List<Course> courses = studentRepository.loadStudentCourses(studentId);
         for (Course course : courses) {

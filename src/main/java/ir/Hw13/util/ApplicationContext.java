@@ -43,93 +43,102 @@ public class ApplicationContext {
     private TestRepository testRepository;
     private TestMapper testMapper;
 
-    private ApplicationContext(){}
+    private ApplicationContext() {
+    }
 
-    public static ApplicationContext getInstance(){
-        if (Objects.isNull(context)){
+    public static ApplicationContext getInstance() {
+        if (Objects.isNull(context)) {
             context = new ApplicationContext();
         }
         return context;
     }
 
-    private EntityManagerFactory getEntityManagerFactory(){
-        if (Objects.isNull(entityManagerFactory)){
+    private EntityManagerFactory getEntityManagerFactory() {
+        if (Objects.isNull(entityManagerFactory)) {
             entityManagerFactory = Persistence.createEntityManagerFactory("default");
         }
         return entityManagerFactory;
     }
 
-    public EntityManager getEntityManager(){
-        if (Objects.isNull(entityManager)){
+    public EntityManager getEntityManager() {
+        if (Objects.isNull(entityManager)) {
             entityManager = getEntityManagerFactory().createEntityManager();
         }
         return entityManager;
     }
-     public StudentRepositoryImpl getStudentRepository(){
-        if (Objects.isNull(studentRepository)){
+
+    public StudentRepositoryImpl getStudentRepository() {
+        if (Objects.isNull(studentRepository)) {
             studentRepository = new StudentRepositoryImpl(getEntityManager());
         }
         return studentRepository;
-     }
+    }
 
-     public StudentMapper getStudentMapper(){
-         if (Objects.isNull(studentMapper)){
-             studentMapper = new StudentMapper();
-         }
-         return studentMapper;
-     }
+    public StudentMapper getStudentMapper() {
+        if (Objects.isNull(studentMapper)) {
+            studentMapper = new StudentMapper();
+        }
+        return studentMapper;
+    }
 
-     public StudentServiceImpl getStudentService(){
-         if (Objects.isNull(studentService)){
-             studentService = new StudentServiceImpl();
-         }
-         return studentService;
-     }
+    public StudentServiceImpl getStudentService() {
+        if (Objects.isNull(studentService)) {
+            studentService = new StudentServiceImpl();
+        }
+        return studentService;
+    }
 
-     public TeacherRepositoryImpl getTeacherRepository(){
-         if (Objects.isNull(teacherRepository)){
-             teacherRepository = new TeacherRepositoryImpl(getEntityManager());
-         }
-         return teacherRepository;
-     }
+    public TeacherRepositoryImpl getTeacherRepository() {
+        if (Objects.isNull(teacherRepository)) {
+            teacherRepository = new TeacherRepositoryImpl(getEntityManager());
+        }
+        return teacherRepository;
+    }
 
-     public TeacherMapper getTeacherMapper(){
-         if (Objects.isNull(teacherMapper)){
-             teacherMapper = new TeacherMapper();
-         }
-         return teacherMapper;
-     }
+    public TeacherMapper getTeacherMapper() {
+        if (Objects.isNull(teacherMapper)) {
+            teacherMapper = new TeacherMapper();
+        }
+        return teacherMapper;
+    }
 
-    public TeacherServiceImpl getTeacherService(){
-        if (Objects.isNull(teacherService)){
+    public TeacherServiceImpl getTeacherService() {
+        if (Objects.isNull(teacherService)) {
             teacherService = new TeacherServiceImpl();
         }
         return teacherService;
     }
 
-    public ManagerService getManagerService(){
-        if (Objects.isNull(managerService)){
-            managerService = new ManagerService();
+    public ManagerService getManagerService() {
+        if (Objects.isNull(managerService)) {
+            managerService = new ManagerService(getManagerRepository()
+                    , getPersonMapper()
+                    , getTeacherMapper()
+                    , getStudentMapper()
+                    , getStudentRepository()
+                    , getTeacherRepository()
+                    , getValidator()
+                    , getCourseMapper());
         }
         return managerService;
     }
 
-    public ManagerRepository getManagerRepository(){
-        if (Objects.isNull(managerRepository)){
+    public ManagerRepository getManagerRepository() {
+        if (Objects.isNull(managerRepository)) {
             managerRepository = new ManagerRepository(getEntityManager());
         }
         return managerRepository;
     }
 
-    public PersonMapper getPersonMapper(){
-        if (Objects.isNull(personMapper)){
+    public PersonMapper getPersonMapper() {
+        if (Objects.isNull(personMapper)) {
             personMapper = new PersonMapper();
         }
         return personMapper;
     }
 
-    public Validator getValidator(){
-        if (Objects.isNull(validator)){
+    public Validator getValidator() {
+        if (Objects.isNull(validator)) {
             try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
                 validator = validatorFactory.getValidator();
             }
@@ -137,50 +146,50 @@ public class ApplicationContext {
         return validator;
     }
 
-    public CourseMapper getCourseMapper(){
-        if (Objects.isNull(courseMapper)){
+    public CourseMapper getCourseMapper() {
+        if (Objects.isNull(courseMapper)) {
             courseMapper = new CourseMapper();
         }
         return courseMapper;
     }
 
-    public CourseService getCourseService(){
-        if (Objects.isNull(courseService)){
+    public CourseService getCourseService() {
+        if (Objects.isNull(courseService)) {
             courseService = new CourseService();
         }
         return courseService;
     }
 
     public CourseRepository getCourseRepository() {
-        if (Objects.isNull(courseRepository)){
+        if (Objects.isNull(courseRepository)) {
             courseRepository = new CourseRepository(getEntityManager());
         }
         return courseRepository;
     }
 
-    public ExportService getExportService(){
-        if (Objects.isNull(exportService)){
+    public ExportService getExportService() {
+        if (Objects.isNull(exportService)) {
             exportService = new ExportService(getTeacherService());
         }
         return exportService;
     }
 
-    public TestRepository getTestRepository(){
-        if (Objects.isNull(testRepository)){
+    public TestRepository getTestRepository() {
+        if (Objects.isNull(testRepository)) {
             testRepository = new TestRepository(getEntityManager());
         }
         return testRepository;
     }
 
-    public TestService getTestService(){
-        if (Objects.isNull(testService)){
+    public TestService getTestService() {
+        if (Objects.isNull(testService)) {
             testService = new TestService(getTestRepository(), getTestMapper());
         }
         return testService;
     }
 
     public TestMapper getTestMapper() {
-        if (Objects.isNull(testMapper)){
+        if (Objects.isNull(testMapper)) {
             testMapper = new TestMapper();
         }
         return testMapper;

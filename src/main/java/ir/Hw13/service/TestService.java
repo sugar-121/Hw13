@@ -57,6 +57,7 @@ public class TestService {
         Duration remainingTime = getRemainingTime(attempt);
         if (remainingTime.isZero()) {
             attempt.setStatus(TakingStatus.FINISHED);
+            finishTest(attempt);
             throw new TimeIsUp();
         } else {
             StudentAnswer answer = new StudentAnswer();
@@ -68,10 +69,8 @@ public class TestService {
             if (!Objects.equals(answerText, "")) {
                 answer.setAnsweredText(answerText);
             }
-
             testRepository.insertAnswerToTest(answer);
         }
-
 
     }
 
@@ -92,6 +91,7 @@ public class TestService {
     }
 
     public void finishTest(StudentTakeTestAttempt attempt) {
+
         attempt.setStatus(TakingStatus.FINISHED);
         attempt.setEndTime(LocalDateTime.now());
 
@@ -104,7 +104,7 @@ public class TestService {
         for (StudentAnswer studentAnswer : studentAnswers) {
             if (studentAnswer.getQuestion() instanceof MultipleChoiceQuestion mcq) {
                 if (studentAnswer.getAnsweredChoice().equals(mcq.getAnswer())) {
-                    studentAnswer.setScore(getQuestionScoreInTest(attempt.getTest().getId()
+                    studentAnswer.setScore((double)getQuestionScoreInTest(attempt.getTest().getId()
                             , studentAnswer.getQuestion().getId()));
                 } else {
                     studentAnswer.setScore((double) 0);
@@ -120,7 +120,7 @@ public class TestService {
         List<StudentTakeTestAttempt> finishedAttempts = new ArrayList<>();
         for (StudentTakeTestAttempt attempt : attempts) {
             if (attempt.getStatus().equals(TakingStatus.IN_PROGRESS)) {
-                if (getRemainingTime(attempt).isZero()) {
+                if (!getRemainingTime(attempt).isPositive()) {
                     finishTest(attempt);
                 }
             }
@@ -131,7 +131,7 @@ public class TestService {
         return finishedAttempts;
     }
 
-    public Double getQuestionScoreInTest(long testId, long questionId) {
+    public Long getQuestionScoreInTest(long testId, long questionId) {
         return testRepository.getQuestionScoreInTest(testId, questionId);
     }
 }

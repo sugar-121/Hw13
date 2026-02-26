@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TestRepository {
 
@@ -41,7 +42,11 @@ public class TestRepository {
 
     public void insertAnswerToTest(StudentAnswer answer) {
         entityManager.getTransaction().begin();
-        entityManager.persist(answer);
+        if (answer.getId() == null) {
+            entityManager.persist(answer);
+        } else {
+            entityManager.merge(answer);
+        }
         entityManager.getTransaction().commit();
     }
 
@@ -64,15 +69,15 @@ public class TestRepository {
 
     }
 
-    public Double getQuestionScoreInTest(long testId, long questionId) {
-        TypedQuery<Double> query = entityManager.createQuery("select t.score from TestQuestion t where t.tests.id =: testId and t.questions.id =: questionId", Double.class);
-        query.setParameter("testId" ,testId);
-        query.setParameter("questionId",questionId);
+    public Long getQuestionScoreInTest(long testId, long questionId) {
+        TypedQuery<Long> query = entityManager.createQuery("select t.score from TestQuestion t where t.tests.id =: testId and t.questions.id =: questionId", Long.class);
+        query.setParameter("testId", testId);
+        query.setParameter("questionId", questionId);
         return query.getSingleResultOrNull();
     }
 
 
-    public void autoGradeQuestion(StudentAnswer answer){
+    public void autoGradeQuestion(StudentAnswer answer) {
         entityManager.getTransaction().begin();
         entityManager.merge(answer);
         entityManager.getTransaction().commit();
